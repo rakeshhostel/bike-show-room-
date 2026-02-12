@@ -11,7 +11,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 // Images
-import heroBg from "@assets/screenshot-1770901989047.png"; 
+import heroBg from "/images/hero-superbike.png"; 
 
 export default function Home() {
   const [search, setSearch] = useState("");
