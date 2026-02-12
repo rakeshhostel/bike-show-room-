@@ -1,38 +1,75 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { db } from "./db";
+import { bikes, type Bike, type InsertBike, type BikeFilterParams } from "@shared/schema";
+import { eq, and, gte, lte, like, desc, asc, ilike } from "drizzle-orm";
+// Auth storage is imported from separate module
+import { authStorage, type IAuthStorage } from "./replit_integrations/auth";
 
-// modify the interface with any CRUD methods
-// you might need
-
-export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+export interface IStorage extends IAuthStorage {
+  // Bike operations
+  getBikes(filters?: BikeFilterParams): Promise<Bike[]>;
+  getBike(id: number): Promise<Bike | undefined>;
+  createBike(bike: InsertBike): Promise<Bike>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+export class DatabaseStorage implements IStorage {
+  // Auth methods delegated to authStorage
+  getUser = authStorage.getUser;
+  upsertUser = authStorage.upsertUser;
 
-  constructor() {
-    this.users = new Map();
+  async getBikes(filters?: BikeFilterParams): Promise<Bike[]> {
+    let query = db.select().from(bikes);
+    const conditions = [];
+
+    if (filters) {
+      if (filters.brand) {
+        conditions.push(eq(bikes.brand, filters.brand));
+      }
+      if (filters.minPrice) {
+        conditions.push(gte(bikes.price, filters.minPrice));
+      }
+      if (filters.maxPrice) {
+        conditions.push(lte(bikes.price, filters.maxPrice));
+      }
+      if (filters.minCC) {
+        conditions.push(gte(bikes.cc, filters.minCC));
+      }
+      if (filters.maxCC) {
+        conditions.push(lte(bikes.cc, filters.maxCC));
+      }
+      if (filters.category) {
+        conditions.push(eq(bikes.category, filters.category));
+      }
+      if (filters.search) {
+        conditions.push(ilike(bikes.name, `%${filters.search}%`));
+      }
+    }
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+
+    if (filters?.sort) {
+      if (filters.sort === 'price_asc') {
+        query = query.orderBy(asc(bikes.price)) as any;
+      } else if (filters.sort === 'price_desc') {
+        query = query.orderBy(desc(bikes.price)) as any;
+      } else if (filters.sort === 'latest') {
+        query = query.orderBy(desc(bikes.year)) as any;
+      }
+    }
+
+    return await query;
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getBike(id: number): Promise<Bike | undefined> {
+    const [bike] = await db.select().from(bikes).where(eq(bikes.id, id));
+    return bike;
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async createBike(insertBike: InsertBike): Promise<Bike> {
+    const [bike] = await db.insert(bikes).values(insertBike).returning();
+    return bike;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
