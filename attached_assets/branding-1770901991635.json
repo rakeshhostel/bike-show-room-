@@ -1,0 +1,148 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Lato",
+      "role": "body"
+    },
+    {
+      "family": "Open Sans",
+      "role": "unknown"
+    }
+  ],
+  "colors": {
+    "primary": "#0288D1",
+    "accent": "#E03012",
+    "background": "#FFFFFF",
+    "textPrimary": "#00857A",
+    "link": "#00857A"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Lato",
+      "heading": "Lato"
+    },
+    "fontStacks": {
+      "heading": [
+        "Lato",
+        "sans-serif"
+      ],
+      "body": [
+        "Open Sans",
+        "sans-serif",
+        "Lato"
+      ],
+      "paragraph": [
+        "Lato",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "26px",
+      "h2": "18px",
+      "body": "16px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "8px"
+  },
+  "components": {
+    "input": {
+      "background": "#FFFFFF",
+      "textColor": "#333333",
+      "borderColor": "#6F6F6F",
+      "borderRadius": "8px",
+      "borderRadiusCorners": {
+        "topLeft": "8px",
+        "topRight": "8px",
+        "bottomRight": "8px",
+        "bottomLeft": "8px"
+      },
+      "shadow": "none"
+    },
+    "buttonPrimary": {
+      "background": "#E03012",
+      "textColor": "#FFFFFF",
+      "borderColor": "#E03012",
+      "borderRadius": "8px",
+      "borderRadiusCorners": {
+        "topLeft": "8px",
+        "topRight": "8px",
+        "bottomRight": "8px",
+        "bottomLeft": "8px"
+      },
+      "shadow": "none"
+    },
+    "buttonSecondary": {
+      "background": "#FFFFFF",
+      "textColor": "#00857A",
+      "borderColor": "#00857A",
+      "borderRadius": "8px",
+      "borderRadiusCorners": {
+        "topLeft": "8px",
+        "topRight": "8px",
+        "bottomRight": "8px",
+        "bottomLeft": "8px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "favicon": null,
+    "ogImage": "File saved at: attached_assets/ogImage.svg"
+  },
+  "__framework_hints": [
+    "bootstrap"
+  ],
+  "__llm_logo_reasoning": {
+    "selectedIndex": -1,
+    "reasoning": "None of the candidates clearly represent the BikeWale brand. The heuristic suggestion was a tiny icon, which is not suitable as a primary brand logo.",
+    "confidence": 0.3,
+    "rejected": true,
+    "source": "llm"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 0,
+      "text": "Search",
+      "reasoning": "Button #0 has a vibrant red/orange background (#E03012), which stands out as the primary call-to-action due to its color and the action-oriented text 'Search'."
+    },
+    "secondary": {
+      "index": 11,
+      "text": "Check on-road price",
+      "reasoning": "Button #11 has a different background color (#FFFFFF) and serves as a secondary action with the text 'Check on-road price', which is informative and supportive."
+    },
+    "confidence": 0.95
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "motorcycle enthusiasts and potential buyers"
+  },
+  "designSystem": {
+    "framework": "bootstrap",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.95,
+    "colors": 0.9,
+    "overall": 0.925
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": true,
+      "llmSucceeded": true,
+      "finalSource": "llm",
+      "rawLogoSelection": {
+        "selectedLogoIndex": -1,
+        "selectedLogoReasoning": "None of the candidates clearly represent the BikeWale brand. The heuristic suggestion was a tiny icon, which is not suitable as a primary brand logo.",
+        "confidence": 0.3
+      }
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}

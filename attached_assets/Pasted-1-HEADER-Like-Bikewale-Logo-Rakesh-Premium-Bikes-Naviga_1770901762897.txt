@@ -1,0 +1,261 @@
+1. HEADER (Like Bikewale)
+
+Logo: "Rakesh Premium Bikes"
+
+Navigation:
+
+New Bikes
+
+Used Bikes
+
+Compare
+
+Contact
+
+Search bar (Search bikes by name)
+
+Sticky header
+
+🏍 2. HOME SECTION (Hero Banner)
+
+Large banner with premium superbike background
+
+Title:
+"Find Your Perfect Bike"
+
+Subtitle:
+"Compare, Explore & Enquire Instantly"
+
+Search bike input
+
+Explore button
+
+🏍 3. BIKE LISTING SECTION (Like Bikewale Cards)
+
+Display minimum 8 bikes with:
+
+Bike image
+
+Bike name
+
+Ex-showroom price
+
+Manufacturing year
+
+Short specs (Engine CC | Mileage | Transmission)
+
+Rating (⭐ 4.5 etc.)
+
+EMI starting info
+
+“View Details” button
+
+“WhatsApp Enquiry” button
+
+Use random premium bikes like:
+
+Yamaha R15 V4
+
+Royal Enfield Classic 350
+
+KTM Duke 390
+
+Kawasaki Ninja 300
+
+Honda CBR 650R
+
+TVS Apache RR 310
+
+BMW G 310 RR
+
+Suzuki Gixxer SF 250
+
+Each bike card must look clean like Bikewale.
+
+🔍 4. FILTER SECTION (Like Bikewale)
+
+Include:
+
+Filter by Price Range
+
+Filter by Brand
+
+Filter by CC
+
+Sort by:
+
+Price Low to High
+
+Price High to Low
+
+Latest Year
+
+Use JavaScript filtering.
+
+📄 5. BIKE DETAILS PAGE (Like Bikewale Detailed Page)
+
+When user clicks “View Details”:
+
+Open a detailed section/page showing:
+
+Large bike image
+
+Bike name
+
+Price
+
+Year
+
+Full specifications:
+
+Engine
+
+Power
+
+Torque
+
+Mileage
+
+Top Speed
+
+Fuel Type
+
+ABS
+
+Transmission
+
+Weight
+
+Tank Capacity
+
+Color variants
+
+Description paragraph
+
+EMI Calculator UI (simple JS)
+
+Compare option
+
+WhatsApp Enquiry button
+
+💬 6. WHATSAPP INTEGRATION (Very Important)
+
+When user clicks WhatsApp:
+
+It must automatically open WhatsApp with dynamic message:
+
+Message format:
+
+"Hello Rakesh,
+I am interested in this bike:
+
+Bike Name: [Bike Name]
+Price: ₹[Price]
+Manufactured Year: [Year]
+
+Please share full details and availability."
+
+Use this format:
+
+https://wa.me/919390389606?text=ENCODED_MESSAGE
+
+The message must dynamically change based on selected bike.
+
+📞 7. CONTACT SECTION
+
+Include:
+
+Phone: 9390389606 (click to call)
+
+Email: rrakesh20235@gmail.com
+ (clickable mailto)
+
+Address placeholder
+
+Contact form:
+
+Name
+
+Phone
+
+Message
+
+Google Maps embed placeholder
+
+WhatsApp floating button bottom right
+
+🎨 8. DESIGN STYLE (Very Important)
+
+White + Red theme (like Bikewale)
+
+Clean typography
+
+Card-based layout
+
+Subtle shadows
+
+Rounded buttons
+
+Smooth hover animations
+
+Responsive mobile design
+
+Professional dealership look
+
+Loading animation
+
+Scroll reveal animations
+
+⚡ 9. EXTRA ADVANCED FEATURES
+
+Compare 2 bikes feature
+
+Favorite heart icon
+
+Bike image gallery slider
+
+Sticky sidebar on detail page
+
+Back to top button
+
+Animated counters
+
+📦 10. CODE REQUIREMENTS
+
+Single complete working HTML file
+
+Internal CSS & JS
+
+Proper comments
+
+Clean structure
+
+Ready to run in VS Code
+
+Fully responsive
+
+Make it look like a real commercial bike marketplace website similar to Bikewale.com but branded as Rakesh Premium Bikes.
+
+
+---
+
+# 🔥 ULTRA BOOST LINE (Add This At Bottom Of Prompt)
+
+
+
+Make the UI extremely professional and marketplace level. It should feel like a real Indian bike portal like Bikewale with smooth UX and premium design.
+
+
+---
+
+If you want now I can:
+
+- ✅ Generate full working code
+- ✅ Make React version
+- ✅ Make Admin panel to add bikes
+- ✅ Add backend with database
+- ✅ Make it ready for hosting
+- ✅ Add login system
+- ✅ Make mobile app version
+
+Tell me what level you want 😎🔥
