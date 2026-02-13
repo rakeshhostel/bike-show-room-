@@ -21,7 +21,7 @@ export function Footer() {
             </p>
             <div className="flex gap-4 pt-2">
               <a href="https://www.instagram.com/_rakesh_007x?igsh=ZXJ1b3IxcnRzeWdv" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Instagram className="h-5 w-5" /></a>
-              <a href="https://www.facebook.com/people/Rakesh-Rakesh/pfbid02517vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Facebook className="h-5 w-5" /></a>
+              <a href="https://www.facebook.com/share/14WxWc5aaHt/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Facebook className="h-5 w-5" /></a>
               <a href="#" className="hover:text-primary transition-colors"><Twitter className="h-5 w-5" /></a>
               <a href="#" className="hover:text-primary transition-colors"><Youtube className="h-5 w-5" /></a>
             </div>
@@ -32,10 +32,10 @@ export function Footer() {
             <h4 className="text-white font-bold mb-6">Quick Links</h4>
             <ul className="space-y-3 text-sm text-slate-400">
               <li><Link href="/bikes" className="hover:text-primary transition-colors">All Bikes</Link></li>
-              <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
-              <li><Link href="/terms" className="hover:text-primary transition-colors">Terms & Conditions</Link></li>
-              <li><Link href="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/bikes?category=Trending" className="hover:text-primary transition-colors">Trending Bikes</Link></li>
+              <li><Link href="/bikes?category=Electric" className="hover:text-primary transition-colors">Electric Bikes</Link></li>
+              <li><Link href="/bikes" className="hover:text-primary transition-colors">Terms & Conditions</Link></li>
+              <li><Link href="/bikes" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
 

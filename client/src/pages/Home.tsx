@@ -19,12 +19,12 @@ export default function Home() {
   const { data: popularBikes, isLoading: isPopularLoading } = useBikes({ category: "Popular" });
 
   const brands = [
-    { name: "Royal Enfield", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Royal_Enfield_%28India%29_logo.svg/2560px-Royal_Enfield_%28India%29_logo.svg.png" },
+    { name: "Royal Enfield", logo: "https://logos-world.net/wp-content/uploads/2020/11/Royal-Enfield-Logo.png" },
     { name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/2048px-BMW.svg.png" },
-    { name: "KTM", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/KTM_Logo.svg/2560px-KTM_Logo.svg.png" },
-    { name: "Ducati", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Ducati_red_logo.svg/2560px-Ducati_red_logo.svg.png" },
-    { name: "Kawasaki", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Kawasaki_logo.svg/2560px-Kawasaki_logo.svg.png" },
-    { name: "Harley-Davidson", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Harley-Davidson_logo.svg/2560px-Harley-Davidson_logo.svg.png" },
+    { name: "KTM", logo: "https://logos-world.net/wp-content/uploads/2021/10/KTM-Logo.png" },
+    { name: "Ducati", logo: "https://logos-world.net/wp-content/uploads/2020/11/Ducati-Logo.png" },
+    { name: "Kawasaki", logo: "https://logos-world.net/wp-content/uploads/2020/11/Kawasaki-Logo.png" },
+    { name: "Harley-Davidson", logo: "https://logos-world.net/wp-content/uploads/2020/11/Harley-Davidson-Logo.png" },
   ];
 
   return (
