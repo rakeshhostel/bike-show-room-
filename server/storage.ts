@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { bikes, type Bike, type InsertBike, type BikeFilterParams } from "@shared/schema";
+import { bikes, reviews, type Bike, type InsertBike, type BikeFilterParams, type Review, type InsertReview } from "@shared/schema";
 import { eq, and, gte, lte, like, desc, asc, ilike } from "drizzle-orm";
 // Auth storage is imported from separate module
 import { authStorage, type IAuthStorage } from "./replit_integrations/auth";
@@ -9,10 +9,13 @@ export interface IStorage extends IAuthStorage {
   getBikes(filters?: BikeFilterParams): Promise<Bike[]>;
   getBike(id: number): Promise<Bike | undefined>;
   createBike(bike: InsertBike): Promise<Bike>;
+  // Review operations
+  getReviews(bikeId: number): Promise<Review[]>;
+  createReview(review: InsertReview): Promise<Review>;
 }
 
 export class DatabaseStorage implements IStorage {
-  // Auth methods delegated to authStorage
+  // ... existing auth methods ...
   getUser = authStorage.getUser;
   upsertUser = authStorage.upsertUser;
 
@@ -69,6 +72,16 @@ export class DatabaseStorage implements IStorage {
   async createBike(insertBike: InsertBike): Promise<Bike> {
     const [bike] = await db.insert(bikes).values(insertBike).returning();
     return bike;
+  }
+
+  // Review implementation
+  async getReviews(bikeId: number): Promise<Review[]> {
+    return await db.select().from(reviews).where(eq(reviews.bikeId, bikeId)).orderBy(desc(reviews.createdAt));
+  }
+
+  async createReview(insertReview: InsertReview): Promise<Review> {
+    const [review] = await db.insert(reviews).values(insertReview).returning();
+    return review;
   }
 }
 

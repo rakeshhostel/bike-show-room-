@@ -20,9 +20,9 @@ export function Footer() {
               Your trusted destination for premium superbikes. We offer the best deals on new and pre-owned luxury motorcycles with comprehensive service and support.
             </p>
             <div className="flex gap-4 pt-2">
-              <a href="#" className="hover:text-primary transition-colors"><Facebook className="h-5 w-5" /></a>
+              <a href="https://www.instagram.com/_rakesh_007x?igsh=ZXJ1b3IxcnRzeWdv" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Instagram className="h-5 w-5" /></a>
+              <a href="https://www.facebook.com/people/Rakesh-Rakesh/pfbid02517vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9vV9/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Facebook className="h-5 w-5" /></a>
               <a href="#" className="hover:text-primary transition-colors"><Twitter className="h-5 w-5" /></a>
-              <a href="#" className="hover:text-primary transition-colors"><Instagram className="h-5 w-5" /></a>
               <a href="#" className="hover:text-primary transition-colors"><Youtube className="h-5 w-5" /></a>
             </div>
           </div>

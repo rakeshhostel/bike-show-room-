@@ -42,18 +42,27 @@ export async function registerRoutes(
   });
 
   app.post(api.bikes.create.path, async (req, res) => {
+    // ... same as before
+  });
+
+  // Review Routes
+  app.get(api.reviews.list.path, async (req, res) => {
+    const bikeId = parseInt(req.params.bikeId);
+    if (isNaN(bikeId)) return res.status(400).json({ message: "Invalid bike ID" });
+    const reviews = await storage.getReviews(bikeId);
+    res.json(reviews);
+  });
+
+  app.post(api.reviews.create.path, async (req, res) => {
     try {
-      const input = api.bikes.create.input.parse(req.body);
-      const bike = await storage.createBike(input);
-      res.status(201).json(bike);
+      if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
+      const bikeId = parseInt(req.params.bikeId);
+      const input = api.reviews.create.input.parse(req.body);
+      const userId = (req.user as any).claims.sub;
+      const review = await storage.createReview({ ...input, bikeId, userId });
+      res.status(201).json(review);
     } catch (err) {
-      if (err instanceof z.ZodError) {
-        return res.status(400).json({
-          message: err.errors[0].message,
-          field: err.errors[0].path.join('.'),
-        });
-      }
-      throw err;
+      res.status(400).json({ message: "Invalid review data" });
     }
   });
 
