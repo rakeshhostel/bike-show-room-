@@ -22,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 // Import branding image
-import logoImg from "@assets/screenshot-1770901826302.png";
+import logoImg from "/images/logo.png";
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -54,7 +54,7 @@ export function Navbar() {
             <img 
               src={logoImg} 
               alt="Rakesh Premium Bikes" 
-              className="h-10 w-auto object-contain"
+              className="h-12 w-auto object-contain"
             />
             <span className="hidden md:block font-display text-xl font-bold tracking-tight text-primary">
               Rakesh<span className="text-foreground">Premium</span>

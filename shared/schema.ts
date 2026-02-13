@@ -33,9 +33,20 @@ export const insertBikeSchema = createInsertSchema(bikes).omit({ id: true });
 export type Bike = typeof bikes.$inferSelect;
 export type InsertBike = z.infer<typeof insertBikeSchema>;
 
-export type BikeCategory = 'Trending' | 'Popular' | 'Electric' | 'Upcoming' | 'Standard';
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  bikeId: integer("bike_id").notNull(),
+  userId: varchar("user_id").notNull(),
+  rating: integer("rating").notNull(),
+  comment: text("comment").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
 
-// API Types
+export const insertReviewSchema = createInsertSchema(reviews).omit({ id: true, createdAt: true });
+
+export type Review = typeof reviews.$inferSelect;
+export type InsertReview = z.infer<typeof insertReviewSchema>;
+
 export type BikeFilterParams = {
   brand?: string;
   minPrice?: number;

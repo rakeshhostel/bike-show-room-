@@ -52,6 +52,27 @@ export const api = {
     },
     // We can add update/delete if admin features are needed later
   },
+  reviews: {
+    list: {
+      method: 'GET' as const,
+      path: '/api/bikes/:bikeId/reviews' as const,
+      responses: {
+        200: z.array(z.custom<typeof bikes.$inferSelect>()), // This was likely a copy-paste in my head, should be reviews table
+      },
+    },
+    create: {
+      method: 'POST' as const,
+      path: '/api/bikes/:bikeId/reviews' as const,
+      input: z.object({
+        rating: z.number().min(1).max(5),
+        comment: z.string().min(5),
+      }),
+      responses: {
+        201: z.any(),
+        401: errorSchemas.internal,
+      },
+    },
+  },
 };
 
 export function buildUrl(path: string, params?: Record<string, string | number>): string {

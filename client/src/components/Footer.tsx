@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail } from "lucide-react";
-import logoImg from "@assets/screenshot-1770901826302.png";
+// Import logo
+import logoImg from "/images/logo.png";
 
 export function Footer() {
   return (
@@ -10,7 +11,7 @@ export function Footer() {
           {/* Brand Info */}
           <div className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
-              <img src={logoImg} alt="Logo" className="h-8 w-auto brightness-0 invert" />
+              <img src={logoImg} alt="Logo" className="h-10 w-auto" />
               <span className="font-display text-xl font-bold text-white">
                 Rakesh<span className="text-primary">Premium</span>
               </span>
@@ -56,7 +57,7 @@ export function Footer() {
             <ul className="space-y-4 text-sm text-slate-400">
               <li className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span>123 Premium Bike Lane, Automobile District, Hyderabad, Telangana 500033</span>
+                <span>miryalaguda near round nalgonda dist</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-primary shrink-0" />
@@ -64,7 +65,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-primary shrink-0" />
-                <span>sales@rakeshpremium.com</span>
+                <span>rrakesh20235@gmail.com</span>
               </li>
             </ul>
           </div>
