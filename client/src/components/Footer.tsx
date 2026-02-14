@@ -34,8 +34,8 @@ export function Footer() {
               <li><Link href="/bikes" className="hover:text-primary transition-colors">All Bikes</Link></li>
               <li><Link href="/bikes?category=Trending" className="hover:text-primary transition-colors">Trending Bikes</Link></li>
               <li><Link href="/bikes?category=Electric" className="hover:text-primary transition-colors">Electric Bikes</Link></li>
-              <li><Link href="/bikes" className="hover:text-primary transition-colors">Terms & Conditions</Link></li>
-              <li><Link href="/bikes" className="hover:text-primary transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/bikes?category=Popular" className="hover:text-primary transition-colors">Popular Bikes</Link></li>
+              <li><Link href="/bikes?brand=Royal%20Enfield" className="hover:text-primary transition-colors">Royal Enfield</Link></li>
             </ul>
           </div>
 

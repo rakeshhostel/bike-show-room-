@@ -19,12 +19,12 @@ export default function Home() {
   const { data: popularBikes, isLoading: isPopularLoading } = useBikes({ category: "Popular" });
 
   const brands = [
-    { name: "Royal Enfield", logo: "https://logos-world.net/wp-content/uploads/2020/11/Royal-Enfield-Logo.png" },
-    { name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/2048px-BMW.svg.png" },
-    { name: "KTM", logo: "https://logos-world.net/wp-content/uploads/2021/10/KTM-Logo.png" },
-    { name: "Ducati", logo: "https://logos-world.net/wp-content/uploads/2020/11/Ducati-Logo.png" },
-    { name: "Kawasaki", logo: "https://logos-world.net/wp-content/uploads/2020/11/Kawasaki-Logo.png" },
-    { name: "Harley-Davidson", logo: "https://logos-world.net/wp-content/uploads/2020/11/Harley-Davidson-Logo.png" },
+    { name: "Royal Enfield", logo: "https://www.bikewale.com/m/brandlogos/royal-enfield.png" },
+    { name: "BMW", logo: "https://www.bikewale.com/m/brandlogos/bmw.png" },
+    { name: "KTM", logo: "https://www.bikewale.com/m/brandlogos/ktm.png" },
+    { name: "Ducati", logo: "https://www.bikewale.com/m/brandlogos/ducati.png" },
+    { name: "Kawasaki", logo: "https://www.bikewale.com/m/brandlogos/kawasaki.png" },
+    { name: "Harley-Davidson", logo: "https://www.bikewale.com/m/brandlogos/harley-davidson.png" },
   ];
 
   return (
