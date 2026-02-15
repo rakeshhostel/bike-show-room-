@@ -77,7 +77,7 @@ async function seedDatabase() {
   if (existingBikes.length === 0) {
     const bikesToSeed = [
       {
-        name: "Yamaha R15 V4",
+        name: "Yamaha R15 V4 r",
         price: 182000,
         year: 2024,
         cc: 155,
@@ -91,7 +91,7 @@ async function seedDatabase() {
         weight: "142 kg",
         tankCapacity: "11 L",
         rating: "4.5",
-        imageUrl: "https://images.bikewale.com/bikewale/images/bikes/yamaha/r15-v4/yamaha-r15-v4-right-front-three-quarter.jpg",
+        imageUrl: "https://imgd.aeplcdn.com/1056x594/n/hnu58ib_1900617.png?q=80",
         brand: "Yamaha",
         category: "Trending",
         description: "The Yamaha R15 V4 is a sports bike available in 5 variants and 5 colours. It is powered by a 155cc BS6 engine.",
@@ -112,7 +112,7 @@ async function seedDatabase() {
         weight: "195 kg",
         tankCapacity: "13 L",
         rating: "4.7",
-        imageUrl: "https://images.bikewale.com/bikewale/images/bikes/royalenfield/classic-350/royalenfield-classic-350-right-front-three-quarter.jpg",
+        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjMXfwbzADgo97cmtwFDuNPUJxdwolxc-Cyw&s",
         brand: "Royal Enfield",
         category: "Popular",
         description: "The Classic 350 is Royal Enfield's best-selling model, known for its retro styling and thumping exhaust note.",
