@@ -33,6 +33,9 @@ export function BikeCard({ bike }: BikeCardProps) {
             src={bike.imageUrl}
             alt={bike.name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "https://www.bikewale.com/m/default-bike.png";
+            }}
           />
           <div className="absolute top-3 right-3">
             <Button 
