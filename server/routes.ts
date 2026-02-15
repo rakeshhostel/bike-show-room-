@@ -98,7 +98,7 @@ async function seedDatabase() {
         availableColors: ["Racing Blue", "Metallic Red", "Dark Knight"],
       },
       {
-        name: "Royal Enfield Classic 350",
+        name: "Royal Enfield Classic r 350",
         price: 193000,
         year: 2024,
         cc: 349,
