@@ -77,7 +77,7 @@ async function seedDatabase() {
   if (existingBikes.length === 0) {
     const bikesToSeed = [
       {
-        name: "Yamaha R15 V4 r",
+        name: "Yamaha R15 V4 ",
         price: 182000,
         year: 2024,
         cc: 155,
@@ -98,7 +98,7 @@ async function seedDatabase() {
         availableColors: ["Racing Blue", "Metallic Red", "Dark Knight"],
       },
       {
-        name: "Royal Enfield Classic r 350",
+        name: "Royal Enfield Classic  350",
         price: 193000,
         year: 2024,
         cc: 349,
