@@ -11,7 +11,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 
 // Images
-import heroBg from "/images/hero-superbike.png"; 
+import heroBg from "/images/hero-superbike.png";
 
 export default function Home() {
   const [search, setSearch] = useState("");
@@ -19,12 +19,16 @@ export default function Home() {
   const { data: popularBikes, isLoading: isPopularLoading } = useBikes({ category: "Popular" });
 
   const brands = [
-    { name: "Royal Enfield", logo: "https://www.bikewale.com/m/brandlogos/royal-enfield.png" },
-    { name: "BMW", logo: "https://www.bikewale.com/m/brandlogos/bmw.png" },
-    { name: "KTM", logo: "https://www.bikewale.com/m/brandlogos/ktm.png" },
-    { name: "Ducati", logo: "https://www.bikewale.com/m/brandlogos/ducati.png" },
-    { name: "Kawasaki", logo: "https://www.bikewale.com/m/brandlogos/kawasaki.png" },
-    { name: "Harley-Davidson", logo: "https://www.bikewale.com/m/brandlogos/harley-davidson.png" },
+    { name: "Royal Enfield", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsQDRulkCzlr79ijhXZ1pNvZfZnirKZTlpIg&s" },
+    { name: "BMW", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/3840px-BMW.svg.png" },
+    { name: "KTM", logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/KTM-Logo.svg/3840px-KTM-Logo.svg.png" },
+    { name: "Ducati", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSle7K6Mv2VsssJmACIzLIYfcNAr9zSKrfSMA&s" },
+    { name: "Kawasaki", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBqepXLTpSdYz6i15T3F19COivoePjXwOuYw&s" },
+    { name: "Harley-Davidson", logo: "https://assets.simpleviewinc.com/simpleview/image/upload/crm/milwaukee/Harley-Davidson-Logo.wine_23D88B21-B75E-7261-82A1A1A1B60460E9-23d88773056231e_23d8992b-ecf8-9d6b-4e5eab77bef635c5.png" },
+    { name: "Honda", logo: "https://i.pinimg.com/736x/da/9c/a5/da9ca5610b6a94b59294e9cc37657cb1.jpg" },
+    { name: "Yamaha", logo: "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/yamaha-logo-design-template-2a186d04b863b074df7c64226ab79f4b_screen.jpg?ts=1714269679" },
+    { name: "TVS", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR80vY-kPcH2XiDizZ-gJ0sZ6Szz6IOYnWvRg&s" },
+    { name: "Hero", logo: "https://www.logo.wine/a/logo/Hero_MotoCorp/Hero_MotoCorp-Logo.wine.svg" },
   ];
 
   return (
@@ -36,16 +40,16 @@ export default function Home() {
         {/* Background with overlay */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent z-10" />
-          <img 
-            src={heroBg} 
-            alt="Hero Background" 
+          <img
+            src={heroBg}
+            alt="Hero Background"
             className="w-full h-full object-cover object-center"
           />
         </div>
 
         {/* Content */}
         <div className="container-width relative z-20 text-white">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -56,13 +60,13 @@ export default function Home() {
               <span className="text-primary">Dream Machine</span>
             </h1>
             <p className="text-xl text-gray-200 mb-8 font-light">
-              Explore the finest collection of premium superbikes. 
+              Explore the finest collection of premium superbikes.
               Performance, luxury, and thrill awaits.
             </p>
 
             <div className="bg-white/10 backdrop-blur-md p-2 rounded-xl border border-white/20 flex gap-2 max-w-lg">
-              <Input 
-                placeholder="Search by brand or model..." 
+              <Input
+                placeholder="Search by brand or model..."
                 className="bg-transparent border-none text-white placeholder:text-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -134,7 +138,7 @@ export default function Home() {
               ))}
             </div>
           )}
-          
+
           <div className="mt-8 text-center sm:hidden">
             <Link href="/bikes?category=Trending">
               <Button variant="outline" className="w-full">View All</Button>
@@ -155,7 +159,7 @@ export default function Home() {
               Get 0% Interest on <br /> Select Superbikes
             </h2>
             <p className="text-lg text-slate-300 mb-8">
-              Drive home your dream bike today with our exclusive financing partners. 
+              Drive home your dream bike today with our exclusive financing partners.
               Limited time offer for premium models.
             </p>
             <div className="flex flex-wrap gap-4">

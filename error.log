@@ -1,0 +1,63 @@
+DATABASE_URL must be set. Did you forget to provision a database? Using dummy connection to allow server startup.
+Retrying Replit Auth setup failed (likely due to missing REPL_ID or network), skipping auth... TypeError: "clientId" must be a non-empty string
+    at CodedTypeError (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\node_modules\openid-client\src\index.ts:839:15)
+    at new Configuration (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\node_modules\openid-client\src\index.ts:1848:13)
+    at Module.discovery (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\node_modules\openid-client\src\index.ts:1280:20)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async memoize.maxAge (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\server\replit_integrations\auth\replitAuth.ts:13:12)
+    at async setupAuth (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\server\replit_integrations\auth\replitAuth.ts:81:18)
+    at async registerRoutes (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\server\routes.ts:14:5)
+    at async <anonymous> (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\server\index.ts:63:3) {
+  code: 'ERR_INVALID_ARG_TYPE',
+  [cause]: undefined
+}
+Failed to seed database (likely due to missing connection), skipping... AggregateError [ECONNREFUSED]: 
+    at C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async <anonymous> (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\node_modules\src\node-postgres\session.ts:104:19)
+    at async DatabaseStorage.getBikes (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\server\storage.ts:65:12)
+    at async seedDatabase (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\server\routes.ts:256:25)
+    at async registerRoutes (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\server\routes.ts:75:5)
+    at async <anonymous> (C:\Users\Bantu Rakesh\Downloads\Bike-Showroom (1)\Bike-Showroom\server\index.ts:63:3) {
+  code: 'ECONNREFUSED',
+  [errors]: [
+    Error: connect ECONNREFUSED ::1:5432
+        at createConnectionError (node:net:1678:14)
+        at afterConnectMultiple (node:net:1708:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '::1',
+      port: 5432
+    },
+    Error: connect ECONNREFUSED 127.0.0.1:5432
+        at createConnectionError (node:net:1678:14)
+        at afterConnectMultiple (node:net:1708:16) {
+      errno: -4078,
+      code: 'ECONNREFUSED',
+      syscall: 'connect',
+      address: '127.0.0.1',
+      port: 5432
+    }
+  ]
+}
+node:events:486
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen ENOTSUP: operation not supported on socket 0.0.0.0:5001
+    at Server.setupListenHandle [as _listen2] (node:net:1918:21)
+    at listenInCluster (node:net:1997:12)
+    at node:net:2206:7
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1976:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21) {
+  code: 'ENOTSUP',
+  errno: -4049,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 5001
+}
+
+Node.js v24.13.0
