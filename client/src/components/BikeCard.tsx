@@ -34,13 +34,18 @@ export function BikeCard({ bike }: BikeCardProps) {
             alt={bike.name}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://www.bikewale.com/m/default-bike.png";
+              const target = e.target as HTMLImageElement;
+              // Prevent infinite error loop
+              target.onerror = null;
+              // Use a reliable SVG placeholder with bike name
+              const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'><rect width='400' height='300' fill='%23f1f5f9'/><text x='50%25' y='42%25' font-family='sans-serif' font-size='40' fill='%23cbd5e1' text-anchor='middle'>🏍️</text><text x='50%25' y='62%25' font-family='sans-serif' font-size='14' fill='%2394a3b8' text-anchor='middle'>${bike.name}</text><text x='50%25' y='75%25' font-family='sans-serif' font-size='11' fill='%23cbd5e1' text-anchor='middle'>Image not available</text></svg>`;
+              target.src = `data:image/svg+xml,${svg}`;
             }}
           />
           <div className="absolute top-3 right-3">
-            <Button 
-              size="icon" 
-              variant="secondary" 
+            <Button
+              size="icon"
+              variant="secondary"
               className="h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm hover:text-red-500 transition-colors shadow-sm"
               onClick={(e) => {
                 e.preventDefault();
@@ -94,8 +99,8 @@ export function BikeCard({ bike }: BikeCardProps) {
               View Details
             </Button>
           </Link>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="w-full border-primary/20 text-primary hover:bg-primary/5 hover:text-primary hover:border-primary"
             onClick={() => {
               const text = `Hi, I'm interested in the ${bike.name}. Can you provide more details?`;
