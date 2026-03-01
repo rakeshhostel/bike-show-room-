@@ -2,28 +2,45 @@ import type { Express } from "express";
 import type { Server } from "http";
 import { storage } from "./storage";
 import { api } from "@shared/routes";
-import { z } from "zod";
-import { setupAuth, registerAuthRoutes } from "./replit_integrations/auth";
+import session from "express-session";
+import passport from "passport";
+import MemoryStore from "memorystore";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Setup Replit Auth
-  try {
-    await setupAuth(app);
-    registerAuthRoutes(app);
-  } catch (err) {
-    console.warn("Retrying Replit Auth setup failed (likely due to missing REPL_ID or network), skipping auth...", err);
+  // Setup auth — only load Replit Auth when running on Replit (REPL_ID is set)
+  // On Render/production without REPL_ID, just set up basic session middleware
+  if (process.env.REPL_ID) {
+    try {
+      const { setupAuth, registerAuthRoutes } = await import("./replit_integrations/auth");
+      await setupAuth(app);
+      registerAuthRoutes(app);
+    } catch (err) {
+      console.warn("Replit Auth setup failed, skipping...", err);
+    }
+  } else {
+    // Basic session + passport setup without Replit OIDC
+    const sessionTtl = 7 * 24 * 60 * 60 * 1000;
+    const MemStore = MemoryStore(session);
+    app.set("trust proxy", 1);
+    app.use(session({
+      secret: process.env.SESSION_SECRET || "bike-showroom-secret",
+      store: new MemStore({ checkPeriod: 86400000 }),
+      resave: false,
+      saveUninitialized: false,
+      cookie: { httpOnly: true, secure: false, maxAge: sessionTtl },
+    }));
+    app.use(passport.initialize());
+    app.use(passport.session());
+    passport.serializeUser((user: any, cb) => cb(null, user));
+    passport.deserializeUser((user: any, cb) => cb(null, user));
   }
 
   // API Routes
   app.get(api.bikes.list.path, async (req, res) => {
     try {
-      // Parse query params using the schema, but express query params are strings
-      // so we rely on z.coerce in the schema to handle conversions if needed,
-      // or manual parsing if the schema didn't use coerce.
-      // In shared/routes.ts I used z.coerce.number() so this should work.
       const filters = api.bikes.list.input?.parse(req.query);
       const bikes = await storage.getBikes(filters);
       res.json(bikes);
@@ -70,10 +87,5 @@ export async function registerRoutes(
     }
   });
 
-
-
-
   return httpServer;
 }
-
-
