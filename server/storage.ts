@@ -10,6 +10,8 @@ export interface IStorage extends IAuthStorage {
   getBike(id: number): Promise<Bike | undefined>;
   createBike(bike: InsertBike): Promise<Bike>;
   updateBike(id: number, bike: Partial<InsertBike>): Promise<Bike | undefined>;
+  deleteBike(id: number): Promise<boolean>;
+  markSold(id: number, sold: boolean): Promise<Bike | undefined>;
   // Review operations
   getReviews(bikeId: number): Promise<Review[]>;
   createReview(review: InsertReview): Promise<Review>;
@@ -569,10 +571,22 @@ export class MemStorage implements IStorage {
     return bike;
   }
 
-  async updateBike(id, bikeUpdate) {
+  async updateBike(id: number, bikeUpdate: any) {
     const existing = this.bikes.get(id);
     if (!existing) return undefined;
     const updated = { ...existing, ...bikeUpdate };
+    this.bikes.set(id, updated);
+    return updated;
+  }
+
+  async deleteBike(id: number): Promise<boolean> {
+    return this.bikes.delete(id);
+  }
+
+  async markSold(id: number, sold: boolean) {
+    const existing = this.bikes.get(id);
+    if (!existing) return undefined;
+    const updated = { ...existing, sold };
     this.bikes.set(id, updated);
     return updated;
   }

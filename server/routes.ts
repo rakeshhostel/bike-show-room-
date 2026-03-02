@@ -187,5 +187,101 @@ export async function registerRoutes(
     }
   });
 
+  // ─── ADMIN ROUTES ───
+  const ADMIN_EMAIL = "admin@rakesh.com";
+  const ADMIN_PASSWORD = "Admin@1234";
+
+  // Admin middleware
+  const requireAdmin = (req: any, res: any, next: any) => {
+    if (!(req.session as any).isAdmin) {
+      return res.status(401).json({ message: "Admin access required" });
+    }
+    next();
+  };
+
+  // Admin login
+  app.post("/api/admin/login", async (req, res) => {
+    const { email, password } = req.body;
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      (req.session as any).isAdmin = true;
+      return res.json({ message: "Admin logged in" });
+    }
+    return res.status(401).json({ message: "Invalid admin credentials" });
+  });
+
+  // Admin logout
+  app.post("/api/admin/logout", (req, res) => {
+    (req.session as any).isAdmin = false;
+    res.json({ message: "Logged out" });
+  });
+
+  // Check admin session
+  app.get("/api/admin/me", (req, res) => {
+    if ((req.session as any).isAdmin) {
+      return res.json({ isAdmin: true });
+    }
+    return res.status(401).json({ message: "Not admin" });
+  });
+
+  // Get ALL bikes (no filters, for admin)
+  app.get("/api/admin/bikes", requireAdmin, async (req, res) => {
+    const bikes = await storage.getBikes({});
+    res.json(bikes);
+  });
+
+  // Add a new bike
+  app.post("/api/admin/bikes", requireAdmin, async (req, res) => {
+    try {
+      const { name, brand, category, price, year, cc, imageUrl, description,
+        mileage, transmission, power, torque, topSpeed, fuelType, abs,
+        weight, tankCapacity, rating, availableColors } = req.body;
+
+      if (!name || !brand || !category || !price || !year || !cc || !imageUrl) {
+        return res.status(400).json({ message: "Name, brand, category, price, year, CC and image URL are required" });
+      }
+
+      const colors = typeof availableColors === "string"
+        ? availableColors.split(",").map((c: string) => c.trim()).filter(Boolean)
+        : availableColors || [];
+
+      const bike = await storage.createBike({
+        name, brand, category,
+        price: Number(price), year: Number(year), cc: Number(cc),
+        imageUrl, description: description || null,
+        mileage: mileage || null, transmission: transmission || null,
+        power: power || null, torque: torque || null,
+        topSpeed: topSpeed || null, fuelType: fuelType || "Petrol",
+        abs: abs || null, weight: weight || null,
+        tankCapacity: tankCapacity || null,
+        rating: rating || "4.0",
+        availableColors: colors,
+      } as any);
+
+      res.status(201).json(bike);
+    } catch (err: any) {
+      console.error("Admin add bike error:", err);
+      res.status(500).json({ message: "Failed to add bike" });
+    }
+  });
+
+  // Delete a bike
+  app.delete("/api/admin/bikes/:id", requireAdmin, async (req, res) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+    const deleted = await storage.deleteBike(id);
+    if (!deleted) return res.status(404).json({ message: "Bike not found" });
+    res.json({ message: "Bike deleted" });
+  });
+
+  // Toggle sold status
+  app.patch("/api/admin/bikes/:id/sold", requireAdmin, async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { sold } = req.body;
+    if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+    const bike = await storage.markSold(id, Boolean(sold));
+    if (!bike) return res.status(404).json({ message: "Bike not found" });
+    res.json(bike);
+  });
+
   return httpServer;
 }

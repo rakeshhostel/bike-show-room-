@@ -42,24 +42,32 @@ export function BikeCard({ bike }: BikeCardProps) {
               target.src = `data:image/svg+xml,${svg}`;
             }}
           />
+          {/* Favorite button */}
           <div className="absolute top-3 right-3">
             <Button
-              size="icon"
-              variant="secondary"
+              size="icon" variant="secondary"
               className="h-8 w-8 rounded-full bg-white/90 backdrop-blur-sm hover:text-red-500 transition-colors shadow-sm"
               onClick={(e) => {
                 e.preventDefault();
-                if (!user) window.location.href = "/api/login";
-                // Add favorite logic here
+                if (!user) window.location.href = "/login";
               }}
             >
               <Heart className="h-4 w-4" />
             </Button>
           </div>
+          {/* Category badge */}
           {bike.category === 'Trending' && (
             <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground border-none">
               Trending
             </Badge>
+          )}
+          {/* SOLD overlay */}
+          {(bike as any).sold && (
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+              <span className="bg-red-600 text-white font-bold text-xl px-6 py-2 rounded-xl rotate-[-12deg] shadow-lg tracking-widest">
+                SOLD
+              </span>
+            </div>
           )}
         </div>
 

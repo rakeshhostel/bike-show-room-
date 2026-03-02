@@ -26,6 +26,7 @@ export const bikes = pgTable("bikes", {
   description: text("description"),
   category: text("category").notNull(), // 'Trending', 'Popular', 'Electric', 'Upcoming', 'Standard'
   availableColors: jsonb("available_colors").$type<string[]>(),
+  sold: boolean("sold").default(false),
 });
 
 export const insertBikeSchema = createInsertSchema(bikes).omit({ id: true });
@@ -36,9 +37,10 @@ export type InsertBike = z.infer<typeof insertBikeSchema>;
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   bikeId: integer("bike_id").notNull(),
-  userId: varchar("user_id").notNull(),
+  userId: varchar("user_id"),
   rating: integer("rating").notNull(),
   comment: text("comment").notNull(),
+  reviewerName: text("reviewer_name"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
