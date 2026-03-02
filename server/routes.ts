@@ -188,8 +188,8 @@ export async function registerRoutes(
   });
 
   // ─── ADMIN ROUTES ───
-  const ADMIN_EMAIL = "admin@rakesh.com";
-  const ADMIN_PASSWORD = "Admin@1234";
+  const ADMIN_EMAIL = "rrakesh20235@gmail.com";
+  const ADMIN_PASSWORD = "9390389606Rake@";
 
   // Admin middleware
   const requireAdmin = (req: any, res: any, next: any) => {
