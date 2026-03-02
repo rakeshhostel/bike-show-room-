@@ -1,18 +1,18 @@
 import { Link, useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
-import { 
-  Search, 
-  Menu, 
-  X, 
-  User, 
-  LogOut, 
-  Phone, 
+import {
+  Search,
+  Menu,
+  X,
+  User,
+  LogOut,
+  Phone,
   Heart,
   Bike
 } from "lucide-react";
 import { useState } from "react";
-import { 
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -47,13 +47,13 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container-width flex h-16 items-center justify-between">
-        
+
         {/* Logo */}
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center gap-2">
-            <img 
-              src={logoImg} 
-              alt="Rakesh Premium Bikes" 
+            <img
+              src={logoImg}
+              alt="Rakesh Premium Bikes"
               className="h-12 w-auto object-contain"
             />
             <span className="hidden md:block font-display text-xl font-bold tracking-tight text-primary">
@@ -65,12 +65,11 @@ export function Navbar() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
           {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
+            <Link
+              key={link.name}
               href={link.href}
-              className={`transition-colors hover:text-primary ${
-                location === link.href ? "text-primary font-semibold" : "text-muted-foreground"
-              }`}
+              className={`transition-colors hover:text-primary ${location === link.href ? "text-primary font-semibold" : "text-muted-foreground"
+                }`}
             >
               {link.name}
             </Link>
@@ -94,28 +93,17 @@ export function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  {user.profileImageUrl ? (
-                    <img 
-                      src={user.profileImageUrl} 
-                      alt={user.firstName || "User"} 
-                      className="h-8 w-8 rounded-full object-cover border border-border" 
-                    />
-                  ) : (
-                    <User className="h-5 w-5" />
-                  )}
+                  <User className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <div className="flex items-center justify-start gap-2 p-2">
                   <div className="flex flex-col space-y-1 leading-none">
-                    <p className="font-medium">{user.firstName} {user.lastName}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                    <p className="font-medium">{(user as any).name || "User"}</p>
+                    <p className="text-xs text-muted-foreground">{(user as any).email}</p>
                   </div>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Heart className="mr-2 h-4 w-4" /> Favorites
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => logout()}>
                   <LogOut className="mr-2 h-4 w-4" /> Log out
                 </DropdownMenuItem>
@@ -123,12 +111,12 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <Button variant="default" size="sm" className="hidden sm:flex" asChild>
-              <a href="/api/login">Login</a>
+              <Link href="/login">Login</Link>
             </Button>
           )}
 
           {/* Mobile Menu Toggle */}
-          <button 
+          <button
             className="md:hidden p-2 text-muted-foreground hover:text-foreground"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
@@ -152,8 +140,8 @@ export function Navbar() {
           </form>
           <nav className="flex flex-col space-y-3">
             {navLinks.map((link) => (
-              <Link 
-                key={link.name} 
+              <Link
+                key={link.name}
                 href={link.href}
                 className="text-base font-medium text-foreground hover:text-primary px-2 py-1 rounded-md hover:bg-muted"
                 onClick={() => setIsMobileMenuOpen(false)}
@@ -163,7 +151,7 @@ export function Navbar() {
             ))}
             {!user && (
               <Button className="w-full mt-4" asChild>
-                <a href="/api/login">Login / Sign Up</a>
+                <Link href="/login">Login / Sign Up</Link>
               </Button>
             )}
           </nav>

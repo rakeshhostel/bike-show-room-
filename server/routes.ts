@@ -5,13 +5,14 @@ import { api } from "@shared/routes";
 import session from "express-session";
 import passport from "passport";
 import MemoryStore from "memorystore";
+import bcrypt from "bcryptjs";
+import { randomUUID } from "crypto";
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
   // Setup auth — only load Replit Auth when running on Replit (REPL_ID is set)
-  // On Render/production without REPL_ID, just set up basic session middleware
   if (process.env.REPL_ID) {
     try {
       const { setupAuth, registerAuthRoutes } = await import("./replit_integrations/auth");
@@ -26,7 +27,7 @@ export async function registerRoutes(
     const MemStore = MemoryStore(session);
     app.set("trust proxy", 1);
     app.use(session({
-      secret: process.env.SESSION_SECRET || "bike-showroom-secret",
+      secret: process.env.SESSION_SECRET || "bike-showroom-secret-key",
       store: new MemStore({ checkPeriod: 86400000 }),
       resave: false,
       saveUninitialized: false,
@@ -38,7 +39,89 @@ export async function registerRoutes(
     passport.deserializeUser((user: any, cb) => cb(null, user));
   }
 
-  // API Routes
+  // ─── Email/Password Auth Routes ───
+
+  // Register
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const { name, email, password } = req.body;
+      if (!name || !email || !password) {
+        return res.status(400).json({ message: "Name, email and password are required" });
+      }
+      if (password.length < 6) {
+        return res.status(400).json({ message: "Password must be at least 6 characters" });
+      }
+      const existing = await storage.getUserByEmail(email);
+      if (existing) {
+        return res.status(400).json({ message: "Email already registered" });
+      }
+      const passwordHash = await bcrypt.hash(password, 10);
+      const user = await storage.createUser({
+        id: randomUUID(),
+        name,
+        email,
+        passwordHash,
+      });
+      (req.session as any).userId = user.id;
+      (req.session as any).userName = name;
+      (req.session as any).userEmail = email;
+      return res.status(201).json({ id: user.id, name, email });
+    } catch (err) {
+      console.error("Register error:", err);
+      return res.status(500).json({ message: "Registration failed" });
+    }
+  });
+
+  // Login
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+      }
+      const user = await storage.getUserByEmail(email);
+      if (!user) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      const passwordHash = (user as any).passwordHash;
+      if (!passwordHash) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      const valid = await bcrypt.compare(password, passwordHash);
+      if (!valid) {
+        return res.status(401).json({ message: "Invalid email or password" });
+      }
+      (req.session as any).userId = user.id;
+      (req.session as any).userName = (user as any).name || (user as any).firstName || email.split("@")[0];
+      (req.session as any).userEmail = email;
+      return res.json({ id: user.id, name: (req.session as any).userName, email });
+    } catch (err) {
+      console.error("Login error:", err);
+      return res.status(500).json({ message: "Login failed" });
+    }
+  });
+
+  // Logout
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy(() => {
+      res.json({ message: "Logged out" });
+    });
+  });
+
+  // Get current user
+  app.get("/api/auth/user", (req, res) => {
+    const session = req.session as any;
+    if (!session.userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    return res.json({
+      id: session.userId,
+      name: session.userName,
+      email: session.userEmail,
+    });
+  });
+
+  // ─── Bike Routes ───
   app.get(api.bikes.list.path, async (req, res) => {
     try {
       const filters = api.bikes.list.input?.parse(req.query);
@@ -52,21 +135,17 @@ export async function registerRoutes(
 
   app.get(api.bikes.get.path, async (req, res) => {
     const id = parseInt(req.params.id);
-    if (isNaN(id)) {
-      return res.status(404).json({ message: "Bike not found" });
-    }
+    if (isNaN(id)) return res.status(404).json({ message: "Bike not found" });
     const bike = await storage.getBike(id);
-    if (!bike) {
-      return res.status(404).json({ message: "Bike not found" });
-    }
+    if (!bike) return res.status(404).json({ message: "Bike not found" });
     res.json(bike);
   });
 
   app.post(api.bikes.create.path, async (req, res) => {
-    // ... same as before
+    // placeholder
   });
 
-  // Review Routes
+  // ─── Review Routes ───
   app.get(api.reviews.list.path, async (req, res) => {
     const bikeId = parseInt(req.params.bikeId);
     if (isNaN(bikeId)) return res.status(400).json({ message: "Invalid bike ID" });
@@ -74,16 +153,37 @@ export async function registerRoutes(
     res.json(reviews);
   });
 
+  // Anyone can post a review (with name), logged-in users auto-get their name
   app.post(api.reviews.create.path, async (req, res) => {
     try {
-      if (!req.isAuthenticated()) return res.status(401).json({ message: "Unauthorized" });
       const bikeId = parseInt(req.params.bikeId);
-      const input = api.reviews.create.input.parse(req.body);
-      const userId = (req.user as any).claims.sub;
-      const review = await storage.createReview({ ...input, bikeId, userId });
+      if (isNaN(bikeId)) return res.status(400).json({ message: "Invalid bike ID" });
+
+      const session = req.session as any;
+      const { rating, comment, guestName } = req.body;
+
+      if (!rating || !comment) {
+        return res.status(400).json({ message: "Rating and comment are required" });
+      }
+      if (comment.length < 5) {
+        return res.status(400).json({ message: "Comment must be at least 5 characters" });
+      }
+
+      const reviewerName = session.userName || guestName || "Anonymous";
+      const userId = session.userId || null;
+
+      const review = await storage.createReview({
+        bikeId,
+        userId,
+        rating: Number(rating),
+        comment,
+        reviewerName,
+      } as any);
+
       res.status(201).json(review);
     } catch (err) {
-      res.status(400).json({ message: "Invalid review data" });
+      console.error("Review error:", err);
+      res.status(400).json({ message: "Failed to submit review" });
     }
   });
 

@@ -2,6 +2,9 @@ import { users, type User, type UpsertUser, bikes, reviews, type Bike, type Inse
 import { authStorage, type IAuthStorage } from "./replit_integrations/auth";
 
 export interface IStorage extends IAuthStorage {
+  // Auth operations
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: { id: string; name: string; email: string; passwordHash: string }): Promise<User>;
   // Bike operations
   getBikes(filters?: BikeFilterParams): Promise<Bike[]>;
   getBike(id: number): Promise<Bike | undefined>;
@@ -485,7 +488,27 @@ export class MemStorage implements IStorage {
     bikesToSeed.forEach(bike => this.createBike(bike));
   }
 
-  async getUser(id) {
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    for (const user of Array.from(this.users.values())) {
+      if ((user as any).email === email) return user;
+    }
+    return undefined;
+  }
+
+  async createUser(userData: { id: string; name: string; email: string; passwordHash: string }): Promise<User> {
+    const user = {
+      ...userData,
+      firstName: userData.name,
+      lastName: "",
+      profileImageUrl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as any;
+    this.users.set(userData.id, user);
+    return user;
+  }
+
+  async getUser(id: string) {
     return this.users.get(id);
   }
 
