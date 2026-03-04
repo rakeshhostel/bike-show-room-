@@ -15,8 +15,8 @@ import heroBg from "/images/hero-superbike.png";
 
 export default function Home() {
   const [search, setSearch] = useState("");
-  const { data: trendingBikes, isLoading: isTrendingLoading } = useBikes({ category: "Trending" });
-  const { data: popularBikes, isLoading: isPopularLoading } = useBikes({ category: "Popular" });
+  const { data: trendingBikes, isLoading: isTrendingLoading, error: trendingError } = useBikes({ category: "Trending" });
+  const { data: popularBikes, isLoading: isPopularLoading, error: popularError } = useBikes({ category: "Popular" });
 
   const brands = [
     { name: "Royal Enfield", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsQDRulkCzlr79ijhXZ1pNvZfZnirKZTlpIg&s" },
@@ -131,6 +131,8 @@ export default function Home() {
                 <div key={i} className="h-[380px] bg-muted animate-pulse rounded-2xl" />
               ))}
             </div>
+          ) : trendingError ? (
+            <p className="text-center text-muted-foreground py-10">Could not load trending bikes. Please try refreshing.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {trendingBikes?.slice(0, 4).map((bike) => (
@@ -195,6 +197,8 @@ export default function Home() {
                 <div key={i} className="h-[380px] bg-muted animate-pulse rounded-2xl" />
               ))}
             </div>
+          ) : popularError ? (
+            <p className="text-center text-muted-foreground py-10">Could not load popular bikes. Please try refreshing.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {popularBikes?.slice(0, 4).map((bike) => (

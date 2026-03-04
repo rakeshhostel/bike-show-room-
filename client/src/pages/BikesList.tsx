@@ -7,35 +7,35 @@ import { useBikes } from "@/hooks/use-bikes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetTrigger, 
-  SheetHeader, 
-  SheetTitle 
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle
 } from "@/components/ui/sheet";
 import { Filter, X, ChevronDown, SortAsc } from "lucide-react";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select";
 import type { BikeFilterParams } from "@shared/schema";
 
 export default function BikesList() {
   const [location] = useLocation();
   const searchParams = new URLSearchParams(window.location.search);
-  
+
   // State for filters
   const [filters, setFilters] = useState<BikeFilterParams>({
     search: searchParams.get("search") || undefined,
@@ -45,7 +45,7 @@ export default function BikesList() {
   });
 
   const [priceRange, setPriceRange] = useState([0, 2000000]); // Max 20L
-  
+
   // Update filters when price range changes (debounced ideally, but direct here for simplicity)
   useEffect(() => {
     setFilters(prev => ({
@@ -93,8 +93,8 @@ export default function BikesList() {
                 className="mb-4"
               />
               <div className="flex justify-between text-sm">
-                <span>₹{(priceRange[0]/100000).toFixed(1)}L</span>
-                <span>₹{(priceRange[1]/100000).toFixed(1)}L</span>
+                <span>₹{(priceRange[0] / 100000).toFixed(1)}L</span>
+                <span>₹{(priceRange[1] / 100000).toFixed(1)}L</span>
               </div>
             </div>
           </AccordionContent>
@@ -107,8 +107,8 @@ export default function BikesList() {
             <div className="space-y-3 pt-2">
               {["Royal Enfield", "BMW", "KTM", "Ducati", "Kawasaki", "Harley-Davidson", "Triumph"].map((brand) => (
                 <div key={brand} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={brand} 
+                  <Checkbox
+                    id={brand}
                     checked={filters.brand === brand}
                     onCheckedChange={(checked) => handleBrandChange(brand, checked as boolean)}
                   />
@@ -128,10 +128,10 @@ export default function BikesList() {
             <div className="space-y-3 pt-2">
               {["Trending", "Popular", "Electric", "Upcoming", "Standard"].map((cat) => (
                 <div key={cat} className="flex items-center space-x-2">
-                  <Checkbox 
-                    id={cat} 
+                  <Checkbox
+                    id={cat}
                     checked={filters.category === cat}
-                    onCheckedChange={(checked) => setFilters(prev => ({...prev, category: checked ? cat : undefined}))}
+                    onCheckedChange={(checked) => setFilters(prev => ({ ...prev, category: checked ? cat : undefined }))}
                   />
                   <Label htmlFor={cat} className="text-sm font-medium leading-none">
                     {cat}
@@ -148,10 +148,10 @@ export default function BikesList() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      
+
       <div className="container-width py-8">
         <div className="flex flex-col md:flex-row gap-8">
-          
+
           {/* Sidebar Filters (Desktop) */}
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-24 bg-card rounded-xl border border-border p-6 shadow-sm">
@@ -169,7 +169,7 @@ export default function BikesList() {
                   ({bikes?.length || 0} results)
                 </span>
               </h1>
-              
+
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <Sheet>
                   <SheetTrigger asChild>
@@ -187,9 +187,9 @@ export default function BikesList() {
                   </SheetContent>
                 </Sheet>
 
-                <Select 
-                  value={filters.sort} 
-                  onValueChange={(val: any) => setFilters(prev => ({...prev, sort: val}))}
+                <Select
+                  value={filters.sort}
+                  onValueChange={(val: any) => setFilters(prev => ({ ...prev, sort: val }))}
                 >
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Sort by" />
@@ -210,6 +210,12 @@ export default function BikesList() {
                   <div key={i} className="h-[400px] bg-muted animate-pulse rounded-2xl" />
                 ))}
               </div>
+            ) : error ? (
+              <div className="text-center py-20 bg-muted/20 rounded-2xl border border-dashed border-border">
+                <h3 className="text-xl font-bold mb-2 text-destructive">Failed to load bikes</h3>
+                <p className="text-muted-foreground mb-6">Could not connect to the server. Please try again.</p>
+                <Button onClick={() => window.location.reload()}>Retry</Button>
+              </div>
             ) : bikes?.length === 0 ? (
               <div className="text-center py-20 bg-muted/20 rounded-2xl border border-dashed border-border">
                 <div className="mx-auto w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
@@ -229,7 +235,7 @@ export default function BikesList() {
           </main>
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );
