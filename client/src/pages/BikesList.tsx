@@ -4,6 +4,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { BikeCard } from "@/components/BikeCard";
 import { useBikes } from "@/hooks/use-bikes";
+import { useSlowLoading } from "@/hooks/use-slow-loading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
@@ -56,6 +57,7 @@ export default function BikesList() {
   }, [priceRange]);
 
   const { data: bikes, isLoading, error } = useBikes(filters);
+  const isSlowLoading = useSlowLoading(isLoading);
 
   // Filter Handlers
   const handleBrandChange = (brand: string, checked: boolean) => {
@@ -148,6 +150,14 @@ export default function BikesList() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
+
+      {/* Cold-start warm-up banner */}
+      {isSlowLoading && (
+        <div className="w-full bg-amber-500/10 border-b border-amber-500/30 text-amber-700 dark:text-amber-400 px-4 py-2 text-sm text-center flex items-center justify-center gap-2">
+          <span className="inline-block h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+          Server is waking up on Render's free tier — this may take up to 60 seconds. Please wait…
+        </div>
+      )}
 
       <div className="container-width py-8">
         <div className="flex flex-col md:flex-row gap-8">

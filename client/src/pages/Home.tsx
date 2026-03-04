@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { BikeCard } from "@/components/BikeCard";
 import { useBikes } from "@/hooks/use-bikes";
+import { useSlowLoading } from "@/hooks/use-slow-loading";
 import { Input } from "@/components/ui/input";
 import { Search, ArrowRight, Star, TrendingUp, ShieldCheck } from "lucide-react";
 import { useState } from "react";
@@ -17,6 +18,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const { data: trendingBikes, isLoading: isTrendingLoading, error: trendingError } = useBikes({ category: "Trending" });
   const { data: popularBikes, isLoading: isPopularLoading, error: popularError } = useBikes({ category: "Popular" });
+  const isSlowLoading = useSlowLoading(isTrendingLoading || isPopularLoading);
 
   const brands = [
     { name: "Royal Enfield", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsQDRulkCzlr79ijhXZ1pNvZfZnirKZTlpIg&s" },
@@ -34,6 +36,14 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
+
+      {/* Cold-start warm-up banner */}
+      {isSlowLoading && (
+        <div className="w-full bg-amber-500/10 border-b border-amber-500/30 text-amber-700 dark:text-amber-400 px-4 py-2 text-sm text-center flex items-center justify-center gap-2">
+          <span className="inline-block h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+          Server is waking up on Render's free tier — this may take up to 60 seconds. Please wait…
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden">
