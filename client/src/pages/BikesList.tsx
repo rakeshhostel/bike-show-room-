@@ -22,7 +22,7 @@ import {
   SheetHeader,
   SheetTitle
 } from "@/components/ui/sheet";
-import { Filter, X, ChevronDown, SortAsc } from "lucide-react";
+import { Filter, X, ChevronDown, SortAsc, Search } from "lucide-react";
 import {
   Select,
   SelectContent,
