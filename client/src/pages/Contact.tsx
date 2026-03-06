@@ -144,7 +144,7 @@ export default function Contact() {
                                         asChild
                                     >
                                         <a
-                                            href="https://maps.google.com/?q=Rakesh+Premium+Bikes+Hyderabad"
+                                            href="https://maps.app.goo.gl/AtvbaGEYUprJWSzZ8"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
