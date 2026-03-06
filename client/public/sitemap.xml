@@ -3,7 +3,7 @@
 
   <!-- Homepage -->
   <url>
-    <loc>https://rakesh-premium-bikes.onrender.com/</loc>
+    <loc>https://rakesh-premium-showroom.onrender.com/</loc>
     <lastmod>2026-03-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -11,7 +11,7 @@
 
   <!-- Bikes List Page -->
   <url>
-    <loc>https://rakesh-premium-bikes.onrender.com/bikes</loc>
+    <loc>https://rakesh-premium-showroom.onrender.com/bikes</loc>
     <lastmod>2026-03-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority> 
@@ -19,7 +19,7 @@
 
   <!-- About / Contact -->
   <url>
-    <loc>https://rakesh-premium-bikes.onrender.com/about</loc>
+    <loc>https://rakesh-premium-showroom.onrender.com/about</loc>
     <lastmod>2026-03-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
