@@ -12,7 +12,10 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  // Setup auth — only load Replit Auth when running on Replit (REPL_ID is set)
+  // Health check — must respond immediately for Render deployment to succeed
+  app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
+
+
   if (process.env.REPL_ID) {
     try {
       const { setupAuth, registerAuthRoutes } = await import("./replit_integrations/auth");
