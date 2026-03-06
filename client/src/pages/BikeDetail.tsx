@@ -80,8 +80,9 @@ export default function BikeDetail() {
   }
 
   const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast({ title: "Link Copied!", description: "Bike details link copied to clipboard." });
+    const url = window.location.href;
+    const text = `Check out this bike: ${bike?.name} at ₹${bike ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumSignificantDigits: 3 }).format(bike.price) : ''} – ${url}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
   };
 
   const formattedPrice = new Intl.NumberFormat("en-IN", {

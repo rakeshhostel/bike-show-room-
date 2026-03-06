@@ -39,9 +39,8 @@ export function Navbar() {
 
   const navLinks = [
     { name: "New Bikes", href: "/bikes" },
-    { name: "Used Bikes", href: "/used-bikes" }, // Future feature
-    { name: "Compare", href: "/compare" }, // Future feature
-    { name: "Reviews", href: "/reviews" }, // Future feature
+    { name: "Compare", href: "/compare" },
+    { name: "Contact", href: "/contact" },
   ];
 
   return (

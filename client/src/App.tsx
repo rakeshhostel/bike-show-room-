@@ -9,6 +9,8 @@ import BikesList from "@/pages/BikesList";
 import BikeDetail from "@/pages/BikeDetail";
 import Login from "@/pages/Login";
 import Admin from "@/pages/Admin";
+import Contact from "@/pages/Contact";
+import Compare from "@/pages/Compare";
 import NotFound from "@/pages/NotFound";
 
 function Router() {
@@ -20,7 +22,8 @@ function Router() {
       <Route path="/bikes" component={BikesList} />
       <Route path="/bikes/:id" component={BikeDetail} />
       <Route path="/used-bikes" component={BikesList} />
-      <Route path="/compare" component={BikesList} />
+      <Route path="/compare" component={Compare} />
+      <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
     </Switch>
   );
