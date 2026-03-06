@@ -45,8 +45,8 @@ export default function Contact() {
                                     <div>
                                         <p className="font-semibold mb-1">Showroom Address</p>
                                         <p className="text-muted-foreground leading-relaxed">
-                                            123, Main Road, Hyderabad,<br />
-                                            Telangana – 500001, India
+                                            Main Bazar Rd, Near Kanaka Durga Temple,<br />
+                                            Miryalaguda, Telangana – 508207, India
                                         </p>
                                     </div>
                                 </div>
