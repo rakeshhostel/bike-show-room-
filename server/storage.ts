@@ -1,5 +1,10 @@
 import { users, type User, type UpsertUser, bikes, reviews, type Bike, type InsertBike, type BikeFilterParams, type Review, type InsertReview } from "@shared/schema";
-import { authStorage, type IAuthStorage } from "./replit_integrations/auth";
+
+// Inline IAuthStorage interface — avoids importing Replit-specific modules (which crash on Render)
+export interface IAuthStorage {
+  getUser(id: string): Promise<User | undefined>;
+  upsertUser(user: UpsertUser): Promise<User>;
+}
 
 export interface IStorage extends IAuthStorage {
   // Auth operations
