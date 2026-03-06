@@ -144,7 +144,7 @@ export default function Contact() {
                                         asChild
                                     >
                                         <a
-                                            href="https://maps.app.goo.gl/AtvbaGEYUprJWSzZ8"
+                                            href="https://maps.google.com/?q=16.873138,79.566821"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
