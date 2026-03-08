@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EMICalculator } from "@/components/EMICalculator";
+import { OnRoadCalculator } from "@/components/OnRoadCalculator";
 import { useState } from "react";
 import {
   Fuel, Gauge, Zap, Weight, Timer, Check,
@@ -334,6 +335,7 @@ export default function BikeDetail() {
                 )}
 
                 <EMICalculator price={bike.price} />
+                <OnRoadCalculator price={bike.price} />
 
               </div>
             </div>
