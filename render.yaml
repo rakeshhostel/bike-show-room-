@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: rakeshbikes
+    name: rakesh-premium-bikes
     env: node
     region: singapore
     plan: free
