@@ -361,8 +361,8 @@ export class MemStorage implements IStorage {
         availableColors: ["M Motorsport", "Light White / Racing Blue", "Hockenheim Silver"],
       },
       {
-        name: "Ducati Panigale V4",
-        price: 2650000,
+        name: "Ducati Panigale V4 S",
+        price: 3348000,
         year: 2024,
         cc: 1103,
         mileage: "12 kmpl",
@@ -377,8 +377,8 @@ export class MemStorage implements IStorage {
         rating: "4.9",
         imageUrl: "https://www.carandbike.com/_next/image?url=https%3A%2F%2Fimages.carandbike.com%2Fbike-images%2Fgallery%2Fducati%2Fpanigale-v4%2Fexterior%2Fducati-panigale-v4-right-sideview.jpg%3Fv%3D1770873302&w=1920&q=90",
         brand: "Ducati",
-        category: "Premium",
-        description: "The Ducati Panigale V4 is the pinnacle of Italian engineering — racing heritage meets road-going perfection.",
+        category: "Trending", // Put in trending so it shows up on homepage
+        description: "The Ducati Panigale V4 S is the pinnacle of Italian engineering — racing heritage meets road-going perfection. Includes free 1st year comprehensive insurance and zero handling charges on bookings this week.",
         availableColors: ["Ducati Red", "Winter Test Livery", "Speciale"],
       },
       {
