@@ -161,27 +161,56 @@ export default function Home() {
 
       {/* Featured Banner */}
       <section className="py-20 bg-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://pixabay.com/get/gda7f0028a96de672b46dc8ef442e328b6623d7bab2c73f5b07ab88382fb3d8eba829c5892d8d0036880fa300f40180e5ddc12af902725a52b5f74c8375d5a20c_1280.jpg')] bg-cover bg-center opacity-20 fixed-bg" />
-        <div className="container-width relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="max-w-xl">
-            <span className="inline-block py-1 px-3 rounded-full bg-primary/20 text-primary border border-primary/50 text-xs font-bold uppercase tracking-wider mb-4">
-              Limited Offer
-            </span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mb-6 leading-tight">
-              Get 0% Interest on <br /> Select Superbikes
-            </h2>
-            <p className="text-lg text-slate-300 mb-8">
-              Drive home your dream bike today with our exclusive financing partners.
-              Limited time offer for premium models.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-                Check Eligibility
-              </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-black">
-                View Models
-              </Button>
+        {/* Background with mask */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-transparent z-10" />
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-30 fixed-bg" />
+
+        <div className="container-width relative z-20 flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div className="max-w-2xl">
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              <span className="inline-flex items-center justify-center py-1 px-3 rounded-full bg-red-500/20 text-red-400 border border-red-500/50 text-xs font-bold uppercase tracking-wider">
+                🔥 Special Deal
+              </span>
+              <span className="inline-flex items-center justify-center py-1 px-3 rounded-full bg-primary/20 text-primary border border-primary/50 text-xs font-bold uppercase tracking-wider">
+                Featured Bike
+              </span>
             </div>
+
+            <h2 className="text-4xl md:text-6xl font-display font-bold mb-4 leading-tight">
+              Ducati Panigale V4 S
+            </h2>
+
+            <div className="flex items-end gap-3 mb-6">
+              <p className="text-3xl font-display font-bold text-primary">₹33,48,000</p>
+              <p className="text-lg text-slate-400 line-through pb-1 decoration-red-500/50">₹35,00,000</p>
+            </div>
+
+            <p className="text-lg text-slate-300 mb-8 max-w-md font-light leading-relaxed">
+              Experience the pinnacle of Italian engineering. <strong className="text-white font-medium">Free 1st year comprehensive insurance</strong> and zero handling charges on bookings this week.
+            </p>
+
+            <div className="flex flex-wrap gap-4">
+              <Link href="/bikes?search=Ducati">
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-white shadow-[0_0_20px_rgba(220,38,38,0.3)] border-transparent transition-all hover:scale-105">
+                  View Offer Details
+                </Button>
+              </Link>
+              <Link href="/contact">
+                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white hover:text-black backdrop-blur-sm transition-all hover:scale-105">
+                  Book Test Ride
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="hidden lg:block relative w-full max-w-lg">
+            {/* Glow effect behind the image */}
+            <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
+            <img
+              src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?q=80&w=2070&auto=format&fit=crop"
+              alt="Featured Ducati Panigale"
+              className="relative z-10 w-full h-auto rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] object-cover aspect-[4/3] border border-white/10 group-hover:scale-105 transition-transform duration-700"
+            />
           </div>
         </div>
       </section>
