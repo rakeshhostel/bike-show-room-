@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: bike-showroom
+    name: rakeshbikes
     env: node
     region: singapore
     plan: free
