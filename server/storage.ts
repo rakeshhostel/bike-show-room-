@@ -9,7 +9,10 @@ export interface IAuthStorage {
 export interface IStorage extends IAuthStorage {
   // Auth operations
   getUserByEmail(email: string): Promise<User | undefined>;
+  getUserByGoogleId(googleId: string): Promise<User | undefined>;
   createUser(user: { id: string; name: string; email: string; passwordHash: string }): Promise<User>;
+  createGoogleUser(user: { id: string; name: string; email: string; googleId: string; profileImageUrl: string | null }): Promise<User>;
+  setGoogleId(userId: string, googleId: string, photo: string | null): Promise<User>;
   // Bike operations
   getBikes(filters?: BikeFilterParams): Promise<Bike[]>;
   getBike(id: number): Promise<Bike | undefined>;
@@ -502,6 +505,13 @@ export class MemStorage implements IStorage {
     return undefined;
   }
 
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    for (const user of Array.from(this.users.values())) {
+      if ((user as any).googleId === googleId) return user;
+    }
+    return undefined;
+  }
+
   async createUser(userData: { id: string; name: string; email: string; passwordHash: string }): Promise<User> {
     const user = {
       ...userData,
@@ -513,6 +523,27 @@ export class MemStorage implements IStorage {
     } as any;
     this.users.set(userData.id, user);
     return user;
+  }
+
+  async createGoogleUser(userData: { id: string; name: string; email: string; googleId: string; profileImageUrl: string | null }): Promise<User> {
+    const user = {
+      ...userData,
+      firstName: userData.name,
+      lastName: "",
+      passwordHash: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as any;
+    this.users.set(userData.id, user);
+    return user;
+  }
+
+  async setGoogleId(userId: string, googleId: string, photo: string | null): Promise<User> {
+    const existing = this.users.get(userId);
+    if (!existing) throw new Error("User not found");
+    const updated = { ...existing, googleId, profileImageUrl: photo } as any;
+    this.users.set(userId, updated);
+    return updated;
   }
 
   async getUser(id: string) {

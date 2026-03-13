@@ -57,7 +57,7 @@ app.use((req, res, next) => {
 
 // ── Start listening IMMEDIATELY so Render health-checks pass ─────────────
 const port = parseInt(process.env.PORT || "5000", 10);
-httpServer.listen({ port, host: "0.0.0.0" }, () => {
+httpServer.listen(port, "0.0.0.0", () => {
   log(`serving on port ${port}`);
 });
 

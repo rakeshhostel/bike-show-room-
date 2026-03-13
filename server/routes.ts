@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import session from "express-session";
 import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import MemoryStore from "memorystore";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
@@ -15,7 +16,7 @@ export async function registerRoutes(
   // Health check — must respond immediately for Render deployment to succeed
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 
-
+  // ── Session & Passport setup ──────────────────────────────────────────────
   if (process.env.REPL_ID) {
     try {
       const { setupAuth, registerAuthRoutes } = await import("./replit_integrations/auth");
@@ -25,7 +26,6 @@ export async function registerRoutes(
       console.warn("Replit Auth setup failed, skipping...", err);
     }
   } else {
-    // Basic session + passport setup without Replit OIDC
     const sessionTtl = 7 * 24 * 60 * 60 * 1000;
     const MemStore = MemoryStore(session);
     app.set("trust proxy", 1);
@@ -38,11 +38,72 @@ export async function registerRoutes(
     }));
     app.use(passport.initialize());
     app.use(passport.session());
+
     passport.serializeUser((user: any, cb) => cb(null, user));
     passport.deserializeUser((user: any, cb) => cb(null, user));
   }
 
-  // ─── Email/Password Auth Routes ───
+  // ── Google OAuth Strategy ─────────────────────────────────────────────────
+  passport.use(new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      callbackURL: `${process.env.BASE_URL || 'http://localhost:5000'}/api/auth/google/callback`,
+    },
+    async (_accessToken, _refreshToken, profile, done) => {
+      try {
+        const email = profile.emails?.[0]?.value || "";
+        const name = profile.displayName || "Google User";
+        const googleId = profile.id;
+        const photo = profile.photos?.[0]?.value || null;
+
+        // Check if user already exists by Google ID
+        let user = await storage.getUserByGoogleId(googleId);
+        if (!user) {
+          // Check if email already registered (link accounts)
+          user = await storage.getUserByEmail(email);
+          if (user) {
+            // Upgrade existing email/pass account with Google ID
+            user = await storage.setGoogleId(user.id, googleId, photo);
+          } else {
+            // Brand new user via Google
+            user = await storage.createGoogleUser({
+              id: randomUUID(),
+              name,
+              email,
+              googleId,
+              profileImageUrl: photo,
+            });
+          }
+        }
+        return done(null, { id: user!.id, name, email, photo });
+      } catch (err) {
+        return done(err as Error);
+      }
+    }
+  ));
+
+  // Google OAuth — start flow
+  app.get("/api/auth/google",
+    passport.authenticate("google", { scope: ["profile", "email"] })
+  );
+
+  // Google OAuth — callback
+  app.get("/api/auth/google/callback",
+    passport.authenticate("google", { failureRedirect: "/login?error=google_failed" }),
+    (req, res) => {
+      const user = req.user as any;
+      if (user) {
+        (req.session as any).userId = user.id;
+        (req.session as any).userName = user.name;
+        (req.session as any).userEmail = user.email;
+        (req.session as any).userPhoto = user.photo;
+      }
+      res.redirect("/");
+    }
+  );
+
+  // ─── Email/Password Auth Routes ───────────────────────────────────────────
 
   // Register
   app.post("/api/auth/register", async (req, res) => {
@@ -88,7 +149,7 @@ export async function registerRoutes(
       }
       const passwordHash = (user as any).passwordHash;
       if (!passwordHash) {
-        return res.status(401).json({ message: "Invalid email or password" });
+        return res.status(401).json({ message: "This email was registered with Google. Please use Google Sign-In." });
       }
       const valid = await bcrypt.compare(password, passwordHash);
       if (!valid) {
@@ -121,10 +182,11 @@ export async function registerRoutes(
       id: session.userId,
       name: session.userName,
       email: session.userEmail,
+      photo: session.userPhoto || null,
     });
   });
 
-  // ─── Bike Routes ───
+  // ─── Bike Routes ───────────────────────────────────────────────────────────
   app.get(api.bikes.list.path, async (req, res) => {
     try {
       const filters = api.bikes.list.input?.parse(req.query);
@@ -148,7 +210,7 @@ export async function registerRoutes(
     // placeholder
   });
 
-  // ─── Review Routes ───
+  // ─── Review Routes ─────────────────────────────────────────────────────────
   app.get(api.reviews.list.path, async (req, res) => {
     const bikeId = parseInt(req.params.bikeId);
     if (isNaN(bikeId)) return res.status(400).json({ message: "Invalid bike ID" });
@@ -156,7 +218,6 @@ export async function registerRoutes(
     res.json(reviews);
   });
 
-  // Anyone can post a review (with name), logged-in users auto-get their name
   app.post(api.reviews.create.path, async (req, res) => {
     try {
       const bikeId = parseInt(req.params.bikeId);
@@ -190,11 +251,10 @@ export async function registerRoutes(
     }
   });
 
-  // ─── ADMIN ROUTES ───
+  // ─── ADMIN ROUTES ──────────────────────────────────────────────────────────
   const ADMIN_EMAIL = "rrakesh20235@gmail.com";
   const ADMIN_PASSWORD = "9390389606Rake@";
 
-  // Admin middleware
   const requireAdmin = (req: any, res: any, next: any) => {
     if (!(req.session as any).isAdmin) {
       return res.status(401).json({ message: "Admin access required" });
@@ -202,7 +262,6 @@ export async function registerRoutes(
     next();
   };
 
-  // Admin login
   app.post("/api/admin/login", async (req, res) => {
     const { email, password } = req.body;
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
@@ -212,13 +271,11 @@ export async function registerRoutes(
     return res.status(401).json({ message: "Invalid admin credentials" });
   });
 
-  // Admin logout
   app.post("/api/admin/logout", (req, res) => {
     (req.session as any).isAdmin = false;
     res.json({ message: "Logged out" });
   });
 
-  // Check admin session
   app.get("/api/admin/me", (req, res) => {
     if ((req.session as any).isAdmin) {
       return res.json({ isAdmin: true });
@@ -226,13 +283,11 @@ export async function registerRoutes(
     return res.status(401).json({ message: "Not admin" });
   });
 
-  // Get ALL bikes (no filters, for admin)
   app.get("/api/admin/bikes", requireAdmin, async (req, res) => {
     const bikes = await storage.getBikes({});
     res.json(bikes);
   });
 
-  // Add a new bike
   app.post("/api/admin/bikes", requireAdmin, async (req, res) => {
     try {
       const { name, brand, category, price, year, cc, imageUrl, description,
@@ -267,7 +322,6 @@ export async function registerRoutes(
     }
   });
 
-  // Delete a bike
   app.delete("/api/admin/bikes/:id", requireAdmin, async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
@@ -276,7 +330,6 @@ export async function registerRoutes(
     res.json({ message: "Bike deleted" });
   });
 
-  // Toggle sold status
   app.patch("/api/admin/bikes/:id/sold", requireAdmin, async (req, res) => {
     const id = parseInt(req.params.id);
     const { sold } = req.body;
