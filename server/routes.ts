@@ -31,13 +31,22 @@ export async function registerRoutes(
   } else {
     const sessionTtl = 7 * 24 * 60 * 60 * 1000;
     const MemStore = MemoryStore(session);
+    const isProd = process.env.NODE_ENV === "production";
+
+    console.log(`[STORAGE_LOG] Registering routes. Environment: ${isProd ? "production" : "development"}`);
+
     app.set("trust proxy", 1);
     app.use(session({
       secret: process.env.SESSION_SECRET || "bike-showroom-secret-key",
       store: new MemStore({ checkPeriod: 86400000 }),
       resave: false,
       saveUninitialized: false,
-      cookie: { httpOnly: true, secure: false, maxAge: sessionTtl },
+      cookie: { 
+        httpOnly: true, 
+        secure: isProd, // Critical for HTTPS on Render
+        sameSite: isProd ? "none" : "lax", // Critical for cross-site if needed, though usually same-site on Render
+        maxAge: sessionTtl 
+      },
     }));
     app.use(passport.initialize());
     app.use(passport.session());
@@ -271,14 +280,18 @@ export async function registerRoutes(
 
   app.post("/api/admin/login", async (req, res) => {
     const { email, password } = req.body;
+    console.log(`[ADMIN_LOG] Login attempt for: ${email}`);
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       (req.session as any).isAdmin = true;
+      console.log(`[ADMIN_LOG] Login successful for: ${email}`);
       return res.json({ message: "Admin logged in" });
     }
+    console.warn(`[ADMIN_LOG] Login failed for: ${email}`);
     return res.status(401).json({ message: "Invalid admin credentials" });
   });
 
   app.post("/api/admin/logout", (req, res) => {
+    console.log("[ADMIN_LOG] Logout request");
     (req.session as any).isAdmin = false;
     res.json({ message: "Logged out" });
   });
@@ -291,27 +304,49 @@ export async function registerRoutes(
   });
 
   app.get("/api/admin/bikes", requireAdmin, async (req, res) => {
+    console.log("[ADMIN_LOG] Fetching all bikes for admin");
     const bikes = await storage.getBikes({});
     res.json(bikes);
   });
 
   app.post("/api/admin/bikes", requireAdmin, async (req, res) => {
+    console.log("[ADMIN_LOG] Add bike request received", req.body);
     try {
       const { name, brand, category, price, year, cc, imageUrl, description,
         mileage, transmission, power, torque, topSpeed, fuelType, abs,
         weight, tankCapacity, rating, availableColors } = req.body;
 
-      if (!name || !brand || !category || price === undefined || year === undefined || cc === undefined || !imageUrl) {
-        return res.status(400).json({ message: "Name, brand, category, price, year, CC and image URL are required" });
+      const missingFields = [];
+      if (!name) missingFields.push("name");
+      if (!brand) missingFields.push("brand");
+      if (!category) missingFields.push("category");
+      if (price === undefined || price === "") missingFields.push("price");
+      if (year === undefined || year === "") missingFields.push("year");
+      if (cc === undefined || cc === "") missingFields.push("cc");
+      if (!imageUrl) missingFields.push("imageUrl");
+
+      if (missingFields.length > 0) {
+        console.warn(`[ADMIN_LOG] Bike creation failed: missing fields [${missingFields.join(", ")}]`);
+        return res.status(400).json({ message: `Required fields missing: ${missingFields.join(", ")}` });
       }
 
       const colors = typeof availableColors === "string"
         ? availableColors.split(",").map((c: string) => c.trim()).filter(Boolean)
         : availableColors || [];
 
+      const parsedPrice = Number(price);
+      const parsedYear = Number(year);
+      const parsedCC = Number(cc);
+
+      if (isNaN(parsedPrice) || isNaN(parsedYear) || isNaN(parsedCC)) {
+        console.warn("[ADMIN_LOG] Bike creation failed: Invalid numeric values", { price, year, cc });
+        return res.status(400).json({ message: "Price, Year, and CC must be valid numbers" });
+      }
+
+      console.log(`[ADMIN_LOG] Creating bike: ${name} (${brand})`);
       const bike = await storage.createBike({
         name, brand, category,
-        price: Number(price), year: Number(year), cc: Number(cc),
+        price: parsedPrice, year: parsedYear, cc: parsedCC,
         imageUrl, description: description || null,
         mileage: mileage || null, transmission: transmission || null,
         power: power || null, torque: torque || null,
@@ -322,10 +357,11 @@ export async function registerRoutes(
         availableColors: colors,
       } as any);
 
+      console.log(`[ADMIN_LOG] Bike created successfully with ID: ${bike.id}`);
       res.status(201).json(bike);
     } catch (err: any) {
-      console.error("Admin add bike error:", err);
-      res.status(500).json({ message: "Failed to add bike: " + err.message });
+      console.error("[ADMIN_LOG] Bike creation error:", err);
+      res.status(500).json({ message: "Internal server error: " + err.message });
     }
   });
 

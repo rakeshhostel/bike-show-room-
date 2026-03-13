@@ -41,11 +41,21 @@ export default function Admin() {
     }, []);
 
     // Fetch all bikes
-    const { data: bikes = [], isLoading } = useQuery({
+    const { data: bikesData = [], isLoading } = useQuery({
         queryKey: ["/api/admin/bikes"],
-        queryFn: () => fetch("/api/admin/bikes", { credentials: "include" }).then(r => r.json()),
+        queryFn: async () => {
+            const res = await fetch("/api/admin/bikes", { credentials: "include" });
+            if (!res.ok) {
+                if (res.status === 401) setIsAdmin(false);
+                const err = await res.json();
+                throw new Error(err.message || "Failed to fetch bikes");
+            }
+            return res.json();
+        },
         enabled: isAdmin === true,
     });
+
+    const bikes = Array.isArray(bikesData) ? bikesData : [];
 
     // Login mutation
     const loginMutation = useMutation({
