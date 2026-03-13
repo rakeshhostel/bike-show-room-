@@ -1,4 +1,6 @@
 import { users, type User, type UpsertUser, bikes, reviews, type Bike, type InsertBike, type BikeFilterParams, type Review, type InsertReview } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, gte, lte, or, ilike, sql, desc, asc } from "drizzle-orm";
 
 // Inline IAuthStorage interface — avoids importing Replit-specific modules (which crash on Render)
 export interface IAuthStorage {
@@ -550,27 +552,27 @@ export class MemStorage implements IStorage {
     return this.users.get(id);
   }
 
-  async upsertUser(user) {
+  async upsertUser(user: UpsertUser) {
     const id = user.id;
     const existingUser = this.users.get(id);
     const updatedUser = {
       ...user,
-      id,
+      id: id!,
       createdAt: existingUser?.createdAt || new Date(),
       updatedAt: new Date(),
-    };
-    this.users.set(id, updatedUser);
+    } as any;
+    this.users.set(id!, updatedUser);
     return updatedUser;
   }
 
-  async getBikes(filters) {
+  async getBikes(filters: BikeFilterParams) {
     let bikes = Array.from(this.bikes.values());
     if (filters) {
       if (filters.brand) bikes = bikes.filter(b => b.brand === filters.brand);
-      if (filters.minPrice) bikes = bikes.filter(b => b.price >= filters.minPrice);
-      if (filters.maxPrice) bikes = bikes.filter(b => b.price <= filters.maxPrice);
-      if (filters.minCC) bikes = bikes.filter(b => b.cc >= filters.minCC);
-      if (filters.maxCC) bikes = bikes.filter(b => b.cc <= filters.maxCC);
+      if (filters.minPrice !== undefined) bikes = bikes.filter(b => b.price >= filters.minPrice!);
+      if (filters.maxPrice !== undefined) bikes = bikes.filter(b => b.price <= filters.maxPrice!);
+      if (filters.minCC !== undefined) bikes = bikes.filter(b => b.cc >= filters.minCC!);
+      if (filters.maxCC !== undefined) bikes = bikes.filter(b => b.cc <= filters.maxCC!);
       if (filters.category) bikes = bikes.filter(b => b.category === filters.category);
       if (filters.search) {
         const s = filters.search.toLowerCase();
@@ -583,9 +585,9 @@ export class MemStorage implements IStorage {
     return bikes;
   }
 
-  async getBike(id) { return this.bikes.get(id); }
+  async getBike(id: number) { return this.bikes.get(id); }
 
-  async createBike(insertBike) {
+  async createBike(insertBike: InsertBike) {
     const id = this.currentBikeId++;
     const bike = {
       ...insertBike,
@@ -602,7 +604,8 @@ export class MemStorage implements IStorage {
       rating: insertBike.rating ?? null,
       description: insertBike.description ?? null,
       availableColors: insertBike.availableColors ?? null,
-    };
+      sold: insertBike.sold ?? false,
+    } as any;
     this.bikes.set(id, bike);
     return bike;
   }
@@ -627,17 +630,168 @@ export class MemStorage implements IStorage {
     return updated;
   }
 
-  async getReviews(bikeId) {
+  async getReviews(bikeId: number) {
     return (this.reviews.get(bikeId) || []).sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
-  async createReview(insertReview) {
+  async createReview(insertReview: InsertReview) {
     const id = this.currentReviewId++;
-    const review = { ...insertReview, id, createdAt: new Date() };
+    const review = { ...insertReview, id, createdAt: new Date() } as any;
     const existing = this.reviews.get(insertReview.bikeId) || [];
     this.reviews.set(insertReview.bikeId, [...existing, review]);
     return review;
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.googleId, (googleId as any)));
+    return user;
+  }
+
+  async createUser(userData: { id: string; name: string; email: string; passwordHash: string }): Promise<User> {
+    const [user] = await db.insert(users).values({
+      ...userData,
+      firstName: userData.name,
+      lastName: "",
+      profileImageUrl: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as any).returning();
+    return user;
+  }
+
+  async createGoogleUser(userData: { id: string; name: string; email: string; googleId: string; profileImageUrl: string | null }): Promise<User> {
+    const [user] = await db.insert(users).values({
+      ...userData,
+      firstName: userData.name,
+      lastName: "",
+      passwordHash: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      googleId: userData.googleId,
+    } as any).returning();
+    return user;
+  }
+
+  async setGoogleId(userId: string, googleId: string, photo: string | null): Promise<User> {
+    const [updated] = await db.update(users)
+      .set({ googleId, profileImageUrl: photo, updatedAt: new Date() } as any)
+      .where(eq(users.id, userId))
+      .returning();
+    return updated;
+  }
+
+  async upsertUser(user: UpsertUser): Promise<User> {
+    // Check if user exists
+    const existing = await this.getUser(user.id!);
+    if (existing) {
+      const [updated] = await db.update(users)
+        .set({ ...user, updatedAt: new Date() } as any)
+        .where(eq(users.id, user.id!))
+        .returning();
+      return updated;
+    } else {
+      const [inserted] = await db.insert(users)
+        .values({ ...user, createdAt: new Date(), updatedAt: new Date() } as any)
+        .returning();
+      return inserted;
+    }
+  }
+
+  async getBikes(filters?: BikeFilterParams): Promise<Bike[]> {
+    let query = db.select().from(bikes);
+    const conditions = [];
+
+    if (filters) {
+      if (filters.brand) conditions.push(eq(bikes.brand, filters.brand));
+      if (filters.category) conditions.push(eq(bikes.category, filters.category));
+      if (filters.minPrice) conditions.push(gte(bikes.price, filters.minPrice));
+      if (filters.maxPrice) conditions.push(lte(bikes.price, filters.maxPrice));
+      if (filters.minCC) conditions.push(gte(bikes.cc, filters.minCC));
+      if (filters.maxCC) conditions.push(lte(bikes.cc, filters.maxCC));
+      if (filters.search) {
+        const s = `%${filters.search.toLowerCase()}%`;
+        conditions.push(or(ilike(bikes.name, s), ilike(bikes.brand, s)));
+      }
+    }
+
+    let finalQuery = conditions.length > 0 ? query.where(and(...conditions)) : query;
+
+    if (filters?.sort === 'price_asc') {
+      finalQuery = (finalQuery as any).orderBy(asc(bikes.price));
+    } else if (filters?.sort === 'price_desc') {
+      finalQuery = (finalQuery as any).orderBy(desc(bikes.price));
+    } else if (filters?.sort === 'latest') {
+      finalQuery = (finalQuery as any).orderBy(desc(bikes.year));
+    } else {
+      finalQuery = (finalQuery as any).orderBy(asc(bikes.id));
+    }
+
+    return await finalQuery;
+  }
+
+  async getBike(id: number): Promise<Bike | undefined> {
+    const [bike] = await db.select().from(bikes).where(eq(bikes.id, id));
+    return bike;
+  }
+
+  async createBike(insertBike: InsertBike): Promise<Bike> {
+    const [bike] = await db.insert(bikes).values({
+      ...insertBike,
+      availableColors: insertBike.availableColors || []
+    } as any).returning();
+    return bike;
+  }
+
+  async updateBike(id: number, bikeUpdate: Partial<InsertBike>): Promise<Bike | undefined> {
+    const [updated] = await db.update(bikes)
+      .set({ ...bikeUpdate } as any)
+      .where(eq(bikes.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteBike(id: number): Promise<boolean> {
+    try {
+      await db.delete(bikes).where(eq(bikes.id, id));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async markSold(id: number, sold: boolean): Promise<Bike | undefined> {
+    const [updated] = await db.update(bikes)
+      .set({ sold })
+      .where(eq(bikes.id, id))
+      .returning();
+    return updated;
+  }
+
+  async getReviews(bikeId: number): Promise<Review[]> {
+    return await db.select().from(reviews)
+      .where(eq(reviews.bikeId, bikeId))
+      .orderBy(desc(reviews.createdAt));
+  }
+
+  async createReview(insertReview: InsertReview): Promise<Review> {
+    const [review] = await db.insert(reviews).values({
+      ...insertReview,
+      createdAt: new Date()
+    } as any).returning();
+    return review;
+  }
+}
+
+export const storage = process.env.DATABASE_URL ? new DatabaseStorage() : new MemStorage();
