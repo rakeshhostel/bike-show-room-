@@ -163,7 +163,7 @@ export default function Admin() {
                                 <label className="block text-sm text-gray-400 mb-1.5">Email</label>
                                 <input
                                     type="email" value={loginEmail} onChange={e => setLoginEmail(e.target.value)}
-                                    placeholder="admin@rakesh.com"
+                                    placeholder="rrakesh20235@gmail.com"
                                     className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/60 transition-all"
                                 />
                             </div>

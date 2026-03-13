@@ -210,7 +210,11 @@ export async function registerRoutes(
   });
 
   app.post(api.bikes.create.path, async (req, res) => {
-    // placeholder
+    if (!(req.session as any).isAdmin) {
+      return res.status(401).json({ message: "Admin access required" });
+    }
+    // Reuse the same logic as the admin route
+    return res.redirect(307, "/api/admin/bikes");
   });
 
   // ─── Review Routes ─────────────────────────────────────────────────────────
@@ -297,7 +301,7 @@ export async function registerRoutes(
         mileage, transmission, power, torque, topSpeed, fuelType, abs,
         weight, tankCapacity, rating, availableColors } = req.body;
 
-      if (!name || !brand || !category || !price || !year || !cc || !imageUrl) {
+      if (!name || !brand || !category || price === undefined || year === undefined || cc === undefined || !imageUrl) {
         return res.status(400).json({ message: "Name, brand, category, price, year, CC and image URL are required" });
       }
 
@@ -321,7 +325,7 @@ export async function registerRoutes(
       res.status(201).json(bike);
     } catch (err: any) {
       console.error("Admin add bike error:", err);
-      res.status(500).json({ message: "Failed to add bike" });
+      res.status(500).json({ message: "Failed to add bike: " + err.message });
     }
   });
 
