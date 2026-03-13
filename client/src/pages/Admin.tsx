@@ -96,11 +96,13 @@ export default function Admin() {
             return res.json();
         },
         onSuccess: () => {
+            // Remove all bike-related queries to force a fresh fetch on the website
+            queryClient.removeQueries({ queryKey: ["/api/bikes"] });
+            queryClient.removeQueries({ queryKey: ["/api/admin/bikes"] });
             queryClient.invalidateQueries({ queryKey: ["/api/admin/bikes"] });
-            queryClient.invalidateQueries({ queryKey: ["/api/bikes"] });
             setForm(emptyForm);
             setShowAddForm(false);
-            toast({ title: "Bike added! 🏍️" });
+            toast({ title: "Bike added! 🏍️ It will now appear on the website." });
         },
         onError: (e: any) => toast({ title: "Failed to add bike", description: e.message, variant: "destructive" }),
     });
@@ -112,8 +114,8 @@ export default function Admin() {
             if (!res.ok) { const e = await res.json(); throw new Error(e.message); }
         },
         onSuccess: () => {
+            queryClient.removeQueries({ queryKey: ["/api/bikes"] });
             queryClient.invalidateQueries({ queryKey: ["/api/admin/bikes"] });
-            queryClient.invalidateQueries({ queryKey: ["/api/bikes"] });
             setDeleteConfirm(null);
             toast({ title: "Bike removed ✓" });
         },
