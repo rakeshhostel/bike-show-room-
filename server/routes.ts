@@ -16,6 +16,9 @@ export async function registerRoutes(
   // Health check — must respond immediately for Render deployment to succeed
   app.get("/api/health", (_req, res) => res.json({ status: "ok" }));
 
+  // Initialize storage (seeding if empty)
+  storage.seed().catch(err => console.error("Storage seeding failed:", err));
+
   // ── Session & Passport setup ──────────────────────────────────────────────
   if (process.env.REPL_ID) {
     try {
@@ -189,7 +192,7 @@ export async function registerRoutes(
   // ─── Bike Routes ───────────────────────────────────────────────────────────
   app.get(api.bikes.list.path, async (req, res) => {
     try {
-      const filters = api.bikes.list.input?.parse(req.query);
+      const filters = api.bikes.list.input?.parse(req.query) || {};
       const bikes = await storage.getBikes(filters);
       res.json(bikes);
     } catch (err) {
