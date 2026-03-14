@@ -16,8 +16,8 @@ import heroBg from "/images/hero-superbike.png";
 
 export default function Home() {
   const [search, setSearch] = useState("");
-  const { data: trendingBikes, isLoading: isTrendingLoading, error: trendingError } = useBikes({ category: "Trending" });
-  const { data: popularBikes, isLoading: isPopularLoading, error: popularError } = useBikes({ category: "Popular" });
+  const { data: trendingBikes, isLoading: isTrendingLoading, error: trendingError } = useBikes({ category: "Trending", sort: "latest" });
+  const { data: popularBikes, isLoading: isPopularLoading, error: popularError } = useBikes({ category: "Popular", sort: "latest" });
   const isSlowLoading = useSlowLoading(isTrendingLoading || isPopularLoading);
 
   const brands = [
@@ -145,7 +145,7 @@ export default function Home() {
             <p className="text-center text-muted-foreground py-10">Could not load trending bikes. Please try refreshing.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {trendingBikes?.slice(0, 4).map((bike) => (
+              {trendingBikes?.slice(0, 8).map((bike) => (
                 <BikeCard key={bike.id} bike={bike} />
               ))}
             </div>
@@ -240,7 +240,7 @@ export default function Home() {
             <p className="text-center text-muted-foreground py-10">Could not load popular bikes. Please try refreshing.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {popularBikes?.slice(0, 4).map((bike) => (
+              {popularBikes?.slice(0, 8).map((bike) => (
                 <BikeCard key={bike.id} bike={bike} />
               ))}
             </div>
